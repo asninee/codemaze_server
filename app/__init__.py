@@ -1,13 +1,14 @@
 import os
 from flask import Flask
 from dotenv import load_dotenv
-
+from flask_socketio import SocketIO
 from .extensions import api, db, jwt
 from .routers.users import userRouter
 from .models import User
 
 load_dotenv()
 
+socketio =  SocketIO()
 
 def create_app():
     app = Flask(__name__)
@@ -29,5 +30,14 @@ def create_app():
     def user_lookup_callback(_jwt_header, jwt_data):
         identity = jwt_data["sub"]
         return User.query.filter_by(id=identity).first()
+    
+
+    @socketio.on("message")
+    def handle_message(msg):
+        print("Received message: " + msg)
+        socketio.emit("Message", msg, broadcast=True)
+
+
+    socketio.init_app(app)
 
     return app
