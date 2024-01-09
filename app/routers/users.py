@@ -1,6 +1,6 @@
 from flask_restx import Resource, Namespace
 from flask_jwt_extended import create_access_token
-from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.security import check_password_hash
 
 from app.extensions import db
 from app.models import User
@@ -22,7 +22,7 @@ class Register(Resource):
         try:
             user = User(
                 username=userRouter.payload["username"],
-                password_hash=generate_password_hash(userRouter.payload["password"]),
+                password=userRouter.payload["password"],
             )
             db.session.add(user)
             db.session.commit()
@@ -38,7 +38,7 @@ class Login(Resource):
         user = User.query.filter_by(username=userRouter.payload["username"]).first()
         if not user:
             return {"error": "User does not exist"}, 404
-        if not check_password_hash(user.password_hash, userRouter.payload["password"]):
+        if not user.check_password(userRouter.payload["password"]):
             return {"error": "Incorrect login credentials"}, 403
         return {
             "user_id": user.id,
