@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 from flask_socketio import SocketIO
 from .extensions import api, db, jwt
 from .routers.users import userRouter
+from .routers.sockets import sockets
 from .models import User
 
 load_dotenv()
@@ -39,5 +40,7 @@ def create_app():
 
 
     socketio.init_app(app)
+
+    app.register_blueprint(sockets)
 
     return app
