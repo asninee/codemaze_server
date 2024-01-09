@@ -16,6 +16,8 @@ flask-sqlalchemy = "*"
 gunicorn = "*"
 psycopg2-binary = "*"
 flask-socketio = "*"
+flask-restx = "*"
+flask-jwt-extended = "*"
 
 [dev-packages]
 pytest = "*"
