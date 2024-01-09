@@ -1,0 +1,4 @@
+FLASK_DEBUG=True
+FLASK_RUN_PORT=4000
+SQLALCHEMY_DATABASE_URI=postgresql://fugzkojk:c6TWr9TZxWu6jsm90BNRTDfBv7TTxYVY@tyke.db.elephantsql.com/fugzkojk
+JWT_SECRET_KEY=/@=s'+C]*+u614Rf}$&LQ3S6to*^R^
