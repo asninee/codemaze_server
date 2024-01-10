@@ -2,6 +2,12 @@ from .extensions import db
 from sqlalchemy.sql import func
 from werkzeug.security import generate_password_hash, check_password_hash
 
+session_user = db.Table(
+    "user_session",
+    db.Column("session_id", db.Integer, db.ForeignKey("session.id")),
+    db.Column("user_id", db.Integer, db.ForeignKey("user.id")),
+)
+
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -14,6 +20,9 @@ class User(db.Model):
     created_at = db.mapped_column(db.DateTime, default=func.now())
 
     rank = db.relationship("Rank", back_populates="users")
+    sessions = db.relationship(
+        "Session", secondary=session_user, back_populates="users"
+    )
 
     def __init__(self, username, password):
         self.username = username
@@ -54,10 +63,11 @@ class Rank(db.Model):
 class Problem(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(50), unique=True)
-    content = db.Column(db.String(1000))
+    content = db.Column(db.Text)
     rank_id = db.Column(db.ForeignKey("rank.id"))
 
     rank = db.relationship("Rank", back_populates="problems")
+    sessions = db.relationship("Session", back_populates="problem")
 
     def __init__(self, title, content, rank_id):
         self.title = title
@@ -66,3 +76,17 @@ class Problem(db.Model):
 
     def __repr__(self):
         return f"Problem(title: {self.title}, rank_id: {self.rank_id})"
+
+
+class Session(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    problem_id = db.Column(db.ForeignKey("problem.id"))
+
+    problem = db.relationship("Problem", back_populates="sessions")
+    users = db.relationship("User", secondary=session_user, back_populates="sessions")
+
+    def __init__(self, problem_id):
+        self.problem_id = problem_id
+
+    def __repr__(self):
+        return f"Session(problem_id: {self.problem_id})"
