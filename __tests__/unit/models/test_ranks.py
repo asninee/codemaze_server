@@ -1,6 +1,3 @@
-from app.models import Rank
-
-
 def test_new_rank_with_fixture(new_rank):
     """
     GIVEN a Rank model
