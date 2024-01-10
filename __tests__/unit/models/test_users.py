@@ -1,17 +1,15 @@
-from app.models import User
-
-
 def test_new_user_with_fixture(new_user):
     """
     GIVEN a User model
     WHEN a new User is created
-    THEN check the name and password fields are defined correctly
+    THEN check the name, password, xp, wins, losses and rank_id fields are defined correctly
     """
     assert new_user.username == "a"
     assert new_user.password_hash != "jkl"
     assert new_user.xp == 0
     assert new_user.wins == 0
     assert new_user.losses == 0
+    assert new_user.rank_id == 1
     assert (
         new_user.__repr__() == f"User(username: {new_user.username}, xp: {new_user.xp})"
     )
