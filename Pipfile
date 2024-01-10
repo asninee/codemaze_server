@@ -21,9 +21,13 @@ flask-jwt-extended = "*"
 
 [dev-packages]
 pytest = "*"
+pytest-watch = "*"
+pytest-cov = "*"
 
 [requires]
 python_version = "3.12"
 
 [scripts]
-"dev" = "flask run"
+dev = "flask run"
+test = "ptw -- -v -rP"
+coverage = "pytest --cov-report term-missing --cov=app"
