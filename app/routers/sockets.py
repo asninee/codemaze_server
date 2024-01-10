@@ -1,10 +1,19 @@
-from flask import Flask, render_template, request, session, redirect, Blueprint
-from flask_socketio import join_room, leave_room, send, SocketIO
-from string import ascii_uppercase
-import random
+from flask_jwt_extended import jwt_required
+from flask_restx import Namespace, Resource
 
-sockets= Blueprint("sockets", __name__)
 
-@sockets.route("/home")
-def hello():
-    return "test123"
+authorizations = {
+    "jsonWebToken": {"type": "apiKey", "in": "header", "name": "Authorization"}
+}
+socketsRouter = Namespace(
+    "sockets", description="`/sockets` routes", authorizations=authorizations
+)
+
+
+@socketsRouter.route("")
+class SocketsAPI(Resource):
+    method_decorators = [jwt_required()]
+
+    @socketsRouter.doc(security="jsonWebToken")
+    def get(self):
+        return "test123", 200
