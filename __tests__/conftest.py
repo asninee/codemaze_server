@@ -1,6 +1,6 @@
 import pytest
 
-from app.models import User, Rank, Problem
+from app.models import Session, User, Rank, Problem
 
 
 @pytest.fixture(scope="module")
@@ -23,3 +23,9 @@ def new_problem():
         rank_id=2,
     )
     return problem
+
+
+@pytest.fixture(scope="module")
+def new_session():
+    session = Session(problem_id=1)
+    return session
