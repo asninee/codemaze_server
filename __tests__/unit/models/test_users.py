@@ -9,14 +9,12 @@ def test_new_user_with_fixture(new_user):
     """
     assert new_user.username == "a"
     assert new_user.password_hash != "jkl"
+    assert new_user.xp == 0
+    assert new_user.wins == 0
+    assert new_user.losses == 0
     assert (
-        new_user.__repr__() == f"User(id: {new_user.id}, username: {new_user.username})"
+        new_user.__repr__() == f"User(username: {new_user.username}, xp: {new_user.xp})"
     )
-    assert new_user.json == {
-        "id": new_user.id,
-        "username": new_user.username,
-        "created_at": new_user.created_at,
-    }
 
 
 def test_setting_password(new_user):
