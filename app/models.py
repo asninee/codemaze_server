@@ -2,6 +2,12 @@ from .extensions import db
 from sqlalchemy.sql import func
 from werkzeug.security import generate_password_hash, check_password_hash
 
+session_user = db.Table(
+    "user_session",
+    db.Column("session_id", db.Integer, db.ForeignKey("session.id")),
+    db.Column("user_id", db.Integer, db.ForeignKey("user.id")),
+)
+
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -15,7 +21,7 @@ class User(db.Model):
 
     rank = db.relationship("Rank", back_populates="users")
     sessions = db.relationship(
-        "Session", secondary="session_user", back_populates="users"
+        "Session", secondary=session_user, back_populates="users"
     )
 
     def __init__(self, username, password):
@@ -70,13 +76,6 @@ class Problem(db.Model):
 
     def __repr__(self):
         return f"Problem(title: {self.title}, rank_id: {self.rank_id})"
-
-
-session_user = db.Table(
-    "user_session",
-    db.Column("session_id", db.Integer, db.ForeignKey("session.id")),
-    db.Column("user_id", db.Integer, db.ForeignKey("user.id")),
-)
 
 
 class Session(db.Model):
