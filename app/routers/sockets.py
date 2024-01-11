@@ -47,7 +47,6 @@ def enter_room(data):
 
     return {"success": True, "room": room}
 
-
 # @sockets.route("/gameroom")
 # def game_room():
 #     room = session.get("room")
@@ -84,6 +83,7 @@ def handle_disconnect():
 
     if room in rooms:
         rooms[room]["members"] -= 1
+        rooms[room]["users"].remove(name)
         if rooms[room]["members"] <= 0:
             del rooms[room]
     send({"name": name, "message": "has left the room"}, to=room)
