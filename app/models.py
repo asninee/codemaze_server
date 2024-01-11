@@ -101,4 +101,4 @@ class TokenBlocklist(db.Model):
         self.jti = jti
 
     def __repr__(self):
-        return f"Token(jti: {self.jti})"
+        return f"TokenBlocklist(jti: {self.jti})"
