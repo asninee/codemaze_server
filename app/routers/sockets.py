@@ -5,15 +5,15 @@ from flask_jwt_extended import jwt_required
 authorizations = {
     "jsonWebToken": {"type": "apiKey", "in": "header", "name": "Authorization"}
 }
-socketsRouter = Namespace(
+socketRouter = Namespace(
     "sockets", description="`/sockets` routes", authorizations=authorizations
 )
 
 
-@socketsRouter.route("")
+@socketRouter.route("")
 class SocketsAPI(Resource):
     method_decorators = [jwt_required()]
 
-    @socketsRouter.doc(security="jsonWebToken")
+    @socketRouter.doc(security="jsonWebToken")
     def get(self):
         return "test123", 200

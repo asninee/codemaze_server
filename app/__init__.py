@@ -4,7 +4,9 @@ from dotenv import load_dotenv
 from .extensions import api, db, jwt, socketio
 from .seed import initialize_db
 from .routers.users import userRouter
-from .routers.sockets import socketsRouter
+from .routers.sockets import socketRouter
+from .routers.problems import problemRouter
+from .routers.sessions import sessionRouter
 from .models import TokenBlocklist, User
 
 load_dotenv()
@@ -22,7 +24,9 @@ def create_app():
     socketio.init_app(app)
 
     api.add_namespace(userRouter)
-    api.add_namespace(socketsRouter)
+    api.add_namespace(socketRouter)
+    api.add_namespace(problemRouter)
+    api.add_namespace(sessionRouter)
 
     @jwt.token_in_blocklist_loader
     def check_if_token_revoked(_jwt_header, jwt_payload: dict) -> bool:
