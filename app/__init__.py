@@ -11,7 +11,7 @@ load_dotenv()
 
 def create_app():
     app = Flask(__name__)
-    CORS(app, origins="http://localhost:5173")
+    CORS(app, origins="http://localhost:5173") #change to render links eventually
     app.config["SQLALCHEMY_DATABASE_URI"] = os.environ["SQLALCHEMY_DATABASE_URI"]
     app.config["JWT_SECRET_KEY"] = os.environ["JWT_SECRET_KEY"]
     app.config["SECRET_KEY"] = "secret"
@@ -23,7 +23,7 @@ def create_app():
     app.register_blueprint(sockets)
 
     # socketio.init_app(app)
-    socketio.init_app(app, cors_allowed_origins="http://localhost:5173") 
+    socketio.init_app(app, cors_allowed_origins="http://localhost:5173")  #change to render links eventually
 
 
     api.add_namespace(userRouter)
