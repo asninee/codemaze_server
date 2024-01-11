@@ -18,6 +18,7 @@ psycopg2-binary = "*"
 flask-socketio = "*"
 flask-restx = "*"
 flask-jwt-extended = "*"
+colorama = "*"
 
 [dev-packages]
 pytest = "*"
