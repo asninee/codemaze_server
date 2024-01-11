@@ -30,9 +30,27 @@ def initialize_db(app, db):
             rank_id=2,
         )
 
+        problem2 = Problem(
+            title="sit",
+            content="Elit magna ad anim sunt consectetur commodo laborum non id consectetur aliquip voluptate pariatur velit ea. Officia sunt magna esse incididunt. Ex cupidatat in commodo amet voluptate Lorem do veniam excepteur ut aliqua ullamco ad. Aliquip nostrud consequat ad duis quis est cupidatat cupidatat cupidatat cillum. Incididunt ut aliquip ut eiusmod officia ullamco consequat in ea. Ad consequat occaecat est duis incididunt.",
+            rank_id=1,
+        )
+
+        problem3 = Problem(
+            title="voluptate",
+            content="Aliqua do laborum occaecat cillum. Dolore pariatur veniam minim. Laboris quis cillum id elit. Ex irure ipsum sit tempor sint ea enim laboris cupidatat mollit occaecat dolore do culpa nulla. Est deserunt laboris ullamco cillum enim mollit consectetur. Incididunt exercitation quis officia tempor ea nulla ipsum exercitation exercitation. Occaecat labore sint quis ullamco adipisicing deserunt esse adipisicing non duis Lorem ea.",
+            rank_id=3,
+        )
+
+        problem4 = Problem(
+            title="reprehenderit",
+            content="Elit deserunt tempor cillum eu. Laborum aute tempor sunt incididunt anim reprehenderit elit ut nisi cillum sint aliquip dolor. Adipisicing est incididunt aute. Occaecat excepteur eiusmod sit ullamco voluptate dolore reprehenderit qui id quis. Ipsum eiusmod sint do voluptate et incididunt voluptate aute qui occaecat ullamco consectetur cupidatat. Pariatur commodo sunt id. Cillum elit proident esse. Sint adipisicing ut pariatur excepteur anim non veniam nostrud elit.",
+            rank_id=4,
+        )
+
         session1 = Session(problem_id=1)
 
-        db.session.add_all([problem1, session1])
+        db.session.add_all([problem1, problem2, problem3, problem4, session1])
 
         session1.users.append(user1)
         session1.users.append(user2)
