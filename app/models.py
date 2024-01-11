@@ -17,7 +17,7 @@ class User(db.Model):
     wins = db.Column(db.Integer)
     losses = db.Column(db.Integer)
     rank_id = db.Column(db.ForeignKey("rank.id"))
-    created_at = db.mapped_column(db.DateTime, default=func.now())
+    created_at = db.Column(db.DateTime, default=func.now())
 
     rank = db.relationship("Rank", back_populates="users")
     sessions = db.relationship(
@@ -90,3 +90,15 @@ class Session(db.Model):
 
     def __repr__(self):
         return f"Session(problem_id: {self.problem_id})"
+
+
+class TokenBlocklist(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    jti = db.Column(db.String(36), nullable=False, index=True)
+    created_at = db.Column(db.DateTime, default=func.now())
+
+    def __init__(self, jti):
+        self.jti = jti
+
+    def __repr__(self):
+        return f"Token(jti: {self.jti})"
