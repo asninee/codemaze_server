@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Flask-SocketIO Search-Que</title>
+    <link 
+        rel="stylesheet" 
+        href="{{url_for('static', filename='style.css')}}">
+    <script 
+        src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" 
+        integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" 
+        crossorigin="anonymous">
+    </script>
+</head>
+
+<body>
+    <div class="room">
+        <h2>Game Room: {{room}}</h2>
+        <div class="chat" id="chat"> </div>
+        
+    </div>
+</body>
+
+<script>
+    const socketio = io()
+
+    const notifications = document.getElementById("chat")
+
+    const createNotif = (name, msg) => {
+        const content = `
+        <div class="text">
+            <span>
+                <strong>${name}</strong>: ${msg}
+            </span>
+            <span class="muted">
+                ${new Date().toLocaleString()}
+            </span>
+        </div>
+        `
+        notifications.innerHTML += content;
+    }
+
+    socketio.on("message", (data) => {
+        createNotif(data.name, data.message)
+    })
+
+</script>
+
+</html>

@@ -1,10 +1,11 @@
 import os
 from flask import Flask
+from flask_cors import CORS
 from dotenv import load_dotenv
 from .extensions import api, db, jwt, socketio
 from .seed import initialize_db
 from .routers.users import userRouter
-from .routers.sockets import socketRouter
+from .routers.sockets import sockets
 from .routers.problems import problemRouter
 from .routers.sessions import sessionRouter
 from .models import TokenBlocklist, User
@@ -13,18 +14,26 @@ load_dotenv()
 
 
 def create_app():
+    allowed_origins = [
+        "http://localhost:5173",
+        "http://localhost:5174",
+        "http://localhost:5175",
+    ]
     app = Flask(__name__)
-
+    CORS(app, origins=allowed_origins)  # change to render links eventually
     app.config["SQLALCHEMY_DATABASE_URI"] = os.environ["SQLALCHEMY_DATABASE_URI"]
     app.config["JWT_SECRET_KEY"] = os.environ["JWT_SECRET_KEY"]
+    app.config["SECRET_KEY"] = "secret"
 
     api.init_app(app)
     db.init_app(app)
     jwt.init_app(app)
-    socketio.init_app(app)
+    socketio.init_app(
+        app, cors_allowed_origins=allowed_origins
+    )  # change to render links eventually
 
+    app.register_blueprint(sockets)
     api.add_namespace(userRouter)
-    api.add_namespace(socketRouter)
     api.add_namespace(problemRouter)
     api.add_namespace(sessionRouter)
 
@@ -43,11 +52,6 @@ def create_app():
     def user_lookup_callback(_jwt_header, jwt_data):
         identity = jwt_data["sub"]
         return User.query.filter_by(id=identity).first()
-
-    @socketio.on("message")
-    def handle_message(msg):
-        print("Received message: " + msg)
-        socketio.emit("Message", msg, broadcast=True)
 
     initialize_db(app, db)
 
