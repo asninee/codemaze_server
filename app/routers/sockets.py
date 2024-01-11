@@ -122,15 +122,18 @@ def check_exisiting_rooms(rooms_R):
 @socketio.on("send_message")
 def msg(data):
     sender_sid = request.sid
-    room = data.get("current_room")
+    
+    room = data.get("room")
     name = data.get("username")
+    user_rooms = data.get("user_rooms")
+    user_room = user_rooms[name]
 
-    if room in rooms:
-        print(rooms[room]["users"])
-        print(name)
-        if name in rooms[room]["users"]:
+    if user_room in rooms:
+        # print(rooms[room]["users"])
+        # print(name)
+        if name in rooms[user_room]["users"]:
             message = data.get("message")
-            socketio.emit("get_message", {"name": name, "message": message}, to=room)
+            socketio.emit("get_message", {"name": name, "message": message}, to=user_room)
             return
         
     print("Invalid room or user")
