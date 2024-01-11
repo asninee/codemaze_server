@@ -5,7 +5,7 @@ from .extensions import api, db, jwt, socketio
 from .seed import initialize_db
 from .routers.users import userRouter
 from .routers.sockets import socketsRouter
-from .models import User
+from .models import TokenBlocklist, User
 
 load_dotenv()
 
@@ -23,6 +23,13 @@ def create_app():
 
     api.add_namespace(userRouter)
     api.add_namespace(socketsRouter)
+
+    @jwt.token_in_blocklist_loader
+    def check_if_token_revoked(_jwt_header, jwt_payload: dict) -> bool:
+        jti = jwt_payload["jti"]
+        token = db.session.query(TokenBlocklist.id).filter_by(jti=jti).scalar()
+
+        return token is not None
 
     @jwt.user_identity_loader
     def user_identity_lookup(user):
