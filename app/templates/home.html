@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Flask-SocketIO Search-Que</title>
+    <link 
+        rel="stylesheet" 
+        href="{{url_for('static', filename='style.css')}}">
+    <script 
+        src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" 
+        integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" 
+        crossorigin="anonymous">
+    </script>
+</head>
+
+<body>
+
+    <div class="lobby">
+        <form method="post" class="lobbyForm">
+            <h3>Enter the Que</h3>
+            <div>
+                <input type="text" placeholder="Username" name="name" value="{{name}}" />
+            </div>
+            <div class="join">
+                <!-- <input type="text" placeholder="Room Code" name="code" value="{{code}}" /> -->
+                <button type=sumbit name="join">Join Room</button>
+            </div>
+            <!-- <button type=sumbit name="create" class="create-btn">Create Room</button> -->
+            {% if error %}
+            <ul>
+                <li>{{error}}</li>
+            </ul>
+            {% endif %}
+        </form>
+    </div>
+</body>
+
+<script>
+    const socket = io({autoConnect: false}) // holding off connection until they click CREATE or JOIN
+</script>
+</html>
