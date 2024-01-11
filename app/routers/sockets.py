@@ -8,7 +8,10 @@ from ..extensions import socketio
 
 sockets= Blueprint("sockets", __name__)
 
-rooms = {} #storing room asssignments
+rooms = {} ##
+
+## Frontend GET rooms -> Backend get rooms from DB and check availability -> creates / join room -> 
+## emit rooms to Backend -> check availability -> emit availability to Frontend -> 
 
 
 @sockets.route("/home", methods=["GET", "POST"])
