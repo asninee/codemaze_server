@@ -27,3 +27,19 @@ problem_model = api.model(
         "rank": fields.List(fields.Nested(rank_model)),
     },
 )
+
+session_model = api.model(
+    "Session",
+    {
+        "id": fields.Integer,
+        "problem": fields.List(fields.Nested(problem_model)),
+        "users": fields.List(fields.Nested(user_model)),
+    },
+)
+
+session_input_model = api.model("SessionInput", {"problem_id": fields.Integer})
+
+session_update_model = api.model(
+    "SessionUpdate",
+    {"user_id": fields.Integer},
+)
