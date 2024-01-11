@@ -1,5 +1,5 @@
-from flask_jwt_extended import jwt_required
 from flask_restx import Namespace, Resource
+from flask_jwt_extended import jwt_required
 
 
 authorizations = {
