@@ -1,6 +1,7 @@
 import os
 from flask import Flask
 from dotenv import load_dotenv
+from flask_cors import CORS
 from .extensions import api, db, jwt, socketio
 from .routers.users import userRouter
 from .routers.sockets import sockets
@@ -10,7 +11,7 @@ load_dotenv()
 
 def create_app():
     app = Flask(__name__)
-
+    CORS(app, origins="http://localhost:5173")
     app.config["SQLALCHEMY_DATABASE_URI"] = os.environ["SQLALCHEMY_DATABASE_URI"]
     app.config["JWT_SECRET_KEY"] = os.environ["JWT_SECRET_KEY"]
     app.config["SECRET_KEY"] = "secret"
@@ -21,7 +22,9 @@ def create_app():
 
     app.register_blueprint(sockets)
 
-    socketio.init_app(app)
+    # socketio.init_app(app)
+    socketio.init_app(app, cors_allowed_origins="http://localhost:5173") 
+
 
     api.add_namespace(userRouter)
 

@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, session, redirect, Blueprint, url_for
-from flask_socketio import join_room, leave_room, send
+from flask_socketio import join_room, leave_room, send, emit
 
 from string import ascii_uppercase
 import random
@@ -53,6 +53,24 @@ def game_room():
     
     ## replaced on the front-end
     return render_template("game_room.html", room=room)
+
+
+@socketio.on("send_message")
+def msg(data):
+    sender_sid = request.sid
+    room = data.get("room")
+    socketio.emit("receive_message", data, include_self=False, room=room)
+
+
+@socketio.on("join_room")
+def enter_room(data):
+    room = data.get("room")
+    join_room(room)
+
+# @socketio.on("leave_room")
+# def exit_room(data):
+#     room = data.get("room")
+#     leave_room(room)
 
 @socketio.on("connect")
 def handle_connect():
