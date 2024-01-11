@@ -1,9 +1,8 @@
 from flask_restx import Resource, Namespace
-from flask_jwt_extended import create_access_token
-from werkzeug.security import check_password_hash
+from flask_jwt_extended import create_access_token, get_jwt, jwt_required
 
 from app.extensions import db
-from app.models import User
+from app.models import TokenBlocklist, User
 from app.api_models import user_model, login_model
 
 authorizations = {
@@ -41,6 +40,17 @@ class Login(Resource):
         if not user.check_password(userRouter.payload["password"]):
             return {"error": "Incorrect login credentials"}, 403
         return {
-            "user_id": user.id,
             "access_token": create_access_token(user, expires_delta=False),
         }
+
+
+@userRouter.route("/logout")
+class Logout(Resource):
+    method_decorators = [jwt_required()]
+
+    @userRouter.doc(security="jsonWebToken")
+    def post(self):
+        jti = get_jwt()["jti"]
+        db.session.add(TokenBlocklist(jti=jti))
+        db.session.commit()
+        return "Logged Out", 204
