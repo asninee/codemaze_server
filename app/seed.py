@@ -48,7 +48,7 @@ def initialize_db(app, db):
             rank_id=4,
         )
 
-        session1 = Session(problem_id=1)
+        session1 = Session(problem_id=1, winner_id=3)
 
         db.session.add_all([problem1, problem2, problem3, problem4, session1])
 

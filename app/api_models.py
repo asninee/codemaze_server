@@ -1,4 +1,6 @@
+from attr import field
 from flask_restx import fields
+from sqlalchemy import Integer
 
 from .extensions import api
 
@@ -26,23 +28,30 @@ problem_model = api.model(
     },
 )
 
+
+session_input_model = api.model(
+    "SessionInput",
+    {
+        "problem_id": fields.Integer,
+        "user_one_id": fields.Integer,
+        "user_two_id": fields.Integer,
+        "winner_id": fields.Integer,
+    },
+)
+
+user_model = api.model(
+    "User", {"id": fields.Integer, "username": fields.String, "xp": fields.Integer}
+)
+
 session_model = api.model(
     "Session",
     {
         "id": fields.Integer,
         "problem": fields.List(fields.Nested(problem_model)),
-        # "users": fields.List(fields.Nested(user_model)),
+        "winner": fields.List(fields.Nested(user_model)),
+        "users": fields.List(fields.Nested(user_model)),
     },
 )
-
-session_input_model = api.model("SessionInput", {"problem_id": fields.Integer})
-
-session_update_model = api.model(
-    "SessionUpdate",
-    {"user_id": fields.Integer},
-)
-
-user_model = api.model("User", {"id": fields.Integer, "username": fields.String})
 
 user_profile_model = api.model(
     "UserProfile",
