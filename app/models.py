@@ -44,6 +44,10 @@ class User(db.Model):
     def __repr__(self):
         return f"User(username: {self.username}, xp: {self.xp})"
 
+    @classmethod
+    def find_by_username(cls, username):
+        return cls.query.filter_by(username=username).first()
+
 
 class Rank(db.Model):
     id = db.Column(db.Integer, primary_key=True)
