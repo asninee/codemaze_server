@@ -1,5 +1,6 @@
-from flask_restx import Resource, Namespace
+from flask_restx import Resource, Namespace, abort
 from flask_jwt_extended import create_access_token, get_jwt, jwt_required
+from http import HTTPStatus
 
 from app.extensions import db
 from app.models import TokenBlocklist, User
@@ -16,34 +17,45 @@ authRouter = Namespace(
 @authRouter.route("/register")
 class Register(Resource):
     @authRouter.expect(login_model)
-    @authRouter.marshal_with(user_model)
+    @authRouter.response(int(HTTPStatus.CREATED), "User successfully registered")
+    @authRouter.response(int(HTTPStatus.CONFLICT), "Username is already registered")
+    @authRouter.response(int(HTTPStatus.BAD_REQUEST), "Validation Error")
+    @authRouter.response(int(HTTPStatus.INTERNAL_SERVER_ERROR), "Internal Server Error")
     def post(self):
         """Register a new user"""
-        try:
-            user = User(
-                username=authRouter.payload["username"],
-                password=authRouter.payload["password"],
-            )
-            db.session.add(user)
-            db.session.commit()
-            return user, 201
-        except:
-            return {"error": "We could not process your request"}, 400
+        if User.find_by_username(authRouter.payload["username"]):
+            abort(HTTPStatus.CONFLICT, f"User with username {authRouter.payload["username"]} is already registered", status="fail")
+
+        user = User(
+            username=authRouter.payload["username"],
+            password=authRouter.payload["password"],
+        )
+
+        db.session.add(user)
+        db.session.commit()
+        return {"status": "success", "message": "User successfully registered"}
 
 
 @authRouter.route("/login")
 class Login(Resource):
     @authRouter.expect(login_model)
+    @authRouter.response(int(HTTPStatus.OK), "Login succeeded")
+    @authRouter.response(int(HTTPStatus.UNAUTHORIZED), "Incorrect login credentials")
+    @authRouter.response(int(HTTPStatus.BAD_REQUEST), "User not found")
+    @authRouter.response(int(HTTPStatus.INTERNAL_SERVER_ERROR), "Internal Server Error")
     def post(self):
         """Authenticate an existing user and return an access token"""
         user = User.query.filter_by(username=authRouter.payload["username"]).first()
         if not user:
-            return {"error": "User does not exist"}, 404
+            abort(HTTPStatus.BAD_REQUEST, "User not found", status="fail")
         if not user.check_password(authRouter.payload["password"]):
-            return {"error": "Incorrect login credentials"}, 403
+            abort(HTTPStatus.UNAUTHORIZED, "Incorrect login credentials", status="fail")
         return {
+            "status": "success",
+            "message": "Login succeeded",
             "username": user.username,
             "access_token": create_access_token(identity=user, expires_delta=False),
+            "token_type": "bearer",
         }
 
 
@@ -52,9 +64,14 @@ class Logout(Resource):
     method_decorators = [jwt_required()]
 
     @authRouter.doc(security="jsonWebToken")
+    @authRouter.response(int(HTTPStatus.OK), "Log out succeeded, token is no longer valid")
+    @authRouter.response(int(HTTPStatus.BAD_REQUEST), "Validation Error")
+    @authRouter.response(int(HTTPStatus.UNAUTHORIZED), "Token is invalid or expired")
+    @authRouter.response(int(HTTPStatus.INTERNAL_SERVER_ERROR), "Internal Server Error")
     def post(self):
         """Log out a currently logged-in user and add their access token to the blocklist"""
         jti = get_jwt()["jti"]
         db.session.add(TokenBlocklist(jti=jti))
         db.session.commit()
-        return "Logged Out", 204
+        response_dict = dict(status="success", message="Successfully logged out")
+        return response_dict, HTTPStatus.OK
