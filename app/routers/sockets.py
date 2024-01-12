@@ -9,7 +9,7 @@ from ..extensions import socketio
 sockets = Blueprint("sockets", __name__)
 
 rooms = {}  # storing room asssignments
-
+user_rooms = {}
 
 @socketio.on("join_room")
 def enter_room(data):
@@ -34,6 +34,7 @@ def enter_room(data):
     # return redirect(url_for("sockets.game_room"))
 
     rooms[room]["users"].append(name)
+    user_rooms[name] = room
 
     # obj = [room, name]
     obj = {"room": room, "name": name, "success": True}
@@ -41,9 +42,12 @@ def enter_room(data):
     ## replaced on the front-end
     socketio.emit("receiveData", data=obj)
 
-    print(available_rooms)
+    print("available rooms: ", available_rooms)
+    print("rooms: ", rooms)
+    print("user_rooms: ", user_rooms)
+
+    socketio.emit("receivemoredata", data=user_rooms)
     handle_connect()
-    print(rooms)
 
     return {"success": True, "room": room}
 
@@ -88,6 +92,9 @@ def handle_disconnect():
             del rooms[room]
     send({"name": name, "message": "has left the room"}, to=room)
     print(f"{name} left room {room}")
+
+
+    
 
 
 def generate_room_code(length):
@@ -146,6 +153,16 @@ def msg(data):
 
     print("Invalid room or user")
 
+@socketio.on("send_user_rooms")
+def get_user_rooms(data):
+    room = data.get("room")
+    name = data.get("username")
+    user_rooms = data.get("user_rooms") or {}
+
+    print("user_rooms: ", user_rooms)
+    user_rooms[name] = room
+    print("user_rooms: ", user_rooms)
+    socketio.emit("sendback_user_rooms", data=user_rooms)
 
 # @socketio.on("message")
 # def handle_message(msg):
