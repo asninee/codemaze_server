@@ -14,7 +14,7 @@ problemRouter = Namespace(
 )
 
 
-@problemRouter.route("")
+@problemRouter.route("/random")
 class ProblemAPI(Resource):
     method_decorators = [jwt_required()]
 
