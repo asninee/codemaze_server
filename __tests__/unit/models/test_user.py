@@ -25,3 +25,14 @@ def test_setting_password(new_user):
     assert new_user.password_hash != "newpass"
     assert new_user.check_password("newpass")
     assert not new_user.check_password("newpass2")
+
+
+def test_rank_up(new_user):
+    """
+    GIVEN an existing User
+    WHEN the rank_up() function is called
+    THEN check the related rank has been updated
+    """
+    new_user.rank_up()
+    assert new_user.rank_id == 2
+    assert new_user.rank_id != 1
