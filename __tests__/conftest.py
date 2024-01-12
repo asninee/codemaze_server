@@ -27,7 +27,7 @@ def new_problem():
 
 @pytest.fixture(scope="module")
 def new_session():
-    session = Session(problem_id=1)
+    session = Session(problem_id=1, winner_id=3)
     return session
 
 
