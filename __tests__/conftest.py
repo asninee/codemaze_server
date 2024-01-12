@@ -1,6 +1,6 @@
 import pytest
 
-from app.models import Session, User, Rank, Problem
+from app.models import Session, TokenBlocklist, User, Rank, Problem
 
 
 @pytest.fixture(scope="module")
@@ -27,5 +27,11 @@ def new_problem():
 
 @pytest.fixture(scope="module")
 def new_session():
-    session = Session(problem_id=1)
+    session = Session(problem_id=1, winner_id=3)
     return session
+
+
+@pytest.fixture(scope="module")
+def new_token_blocklist_entry():
+    blocklist_entry = TokenBlocklist(jti="MZAIfabl9X")
+    return blocklist_entry
