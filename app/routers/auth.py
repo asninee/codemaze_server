@@ -23,8 +23,13 @@ class Register(Resource):
     @authRouter.response(int(HTTPStatus.INTERNAL_SERVER_ERROR), "Internal Server Error")
     def post(self):
         """Register a new user"""
-        if User.find_by_username(authRouter.payload["username"]):
-            abort(HTTPStatus.CONFLICT, f"User with username {authRouter.payload["username"]} is already registered", status="fail")
+        username = authRouter.payload["username"]
+        if User.find_by_username(username=username):
+            abort(
+                HTTPStatus.CONFLICT,
+                f"User with username {username} is already registered",
+                status="fail",
+            )
 
         user = User(
             username=authRouter.payload["username"],
@@ -64,7 +69,9 @@ class Logout(Resource):
     method_decorators = [jwt_required()]
 
     @authRouter.doc(security="jsonWebToken")
-    @authRouter.response(int(HTTPStatus.OK), "Log out succeeded, token is no longer valid")
+    @authRouter.response(
+        int(HTTPStatus.OK), "Log out succeeded, token is no longer valid"
+    )
     @authRouter.response(int(HTTPStatus.BAD_REQUEST), "Validation Error")
     @authRouter.response(int(HTTPStatus.UNAUTHORIZED), "Token is invalid or expired")
     @authRouter.response(int(HTTPStatus.INTERNAL_SERVER_ERROR), "Internal Server Error")
