@@ -6,8 +6,6 @@ login_model = api.model(
     "LoginInput", {"username": fields.String, "password": fields.String}
 )
 
-user_model = api.model("User", {"id": fields.Integer, "username": fields.String})
-
 rank_model = api.model(
     "Rank",
     {
@@ -33,7 +31,7 @@ session_model = api.model(
     {
         "id": fields.Integer,
         "problem": fields.List(fields.Nested(problem_model)),
-        "users": fields.List(fields.Nested(user_model)),
+        # "users": fields.List(fields.Nested(user_model)),
     },
 )
 
@@ -42,4 +40,19 @@ session_input_model = api.model("SessionInput", {"problem_id": fields.Integer})
 session_update_model = api.model(
     "SessionUpdate",
     {"user_id": fields.Integer},
+)
+
+user_model = api.model("User", {"id": fields.Integer, "username": fields.String})
+
+user_profile_model = api.model(
+    "UserProfile",
+    {
+        "id": fields.Integer,
+        "username": fields.String,
+        "xp": fields.Integer,
+        "wins": fields.Integer,
+        "losses": fields.Integer,
+        "rank": fields.List(fields.Nested(rank_model)),
+        "sessions": fields.List(fields.Nested(session_model)),
+    },
 )
