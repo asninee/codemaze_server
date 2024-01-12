@@ -18,6 +18,7 @@ class Register(Resource):
     @authRouter.expect(login_model)
     @authRouter.marshal_with(user_model)
     def post(self):
+        """Register a new user"""
         try:
             user = User(
                 username=authRouter.payload["username"],
@@ -34,6 +35,7 @@ class Register(Resource):
 class Login(Resource):
     @authRouter.expect(login_model)
     def post(self):
+        """Authenticate an existing user and return an access token"""
         user = User.query.filter_by(username=authRouter.payload["username"]).first()
         if not user:
             return {"error": "User does not exist"}, 404
@@ -51,6 +53,7 @@ class Logout(Resource):
 
     @authRouter.doc(security="jsonWebToken")
     def post(self):
+        """Log out a currently logged-in user and add their access token to the blocklist"""
         jti = get_jwt()["jti"]
         db.session.add(TokenBlocklist(jti=jti))
         db.session.commit()

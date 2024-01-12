@@ -20,4 +20,5 @@ class Profile(Resource):
     @userRouter.doc(security="jsonWebToken")
     @userRouter.marshal_with(user_profile_model)
     def get(self):
+        """Get the profile information of the currently logged-in user"""
         return User.query.get(current_user.id)
