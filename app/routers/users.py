@@ -40,6 +40,7 @@ class Login(Resource):
         if not user.check_password(userRouter.payload["password"]):
             return {"error": "Incorrect login credentials"}, 403
         return {
+            "username": user.username,
             "access_token": create_access_token(user, expires_delta=False),
         }
 
