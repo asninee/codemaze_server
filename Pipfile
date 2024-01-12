@@ -19,6 +19,7 @@ flask-socketio = "*"
 flask-restx = "*"
 flask-jwt-extended = "*"
 colorama = "*"
+responses = "*"
 
 [dev-packages]
 pytest = "*"
