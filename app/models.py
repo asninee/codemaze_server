@@ -38,6 +38,9 @@ class User(db.Model):
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
 
+    def rank_up(self):
+        self.rank_id += 1
+
     def __repr__(self):
         return f"User(username: {self.username}, xp: {self.xp})"
 
@@ -81,12 +84,15 @@ class Problem(db.Model):
 class Session(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     problem_id = db.Column(db.ForeignKey("problem.id"))
+    winner_id = db.Column(db.ForeignKey("user.id"))
 
     problem = db.relationship("Problem", back_populates="sessions")
     users = db.relationship("User", secondary=session_user, back_populates="sessions")
+    winner = db.relationship("User", back_populates="sessions")
 
-    def __init__(self, problem_id):
+    def __init__(self, problem_id, winner_id):
         self.problem_id = problem_id
+        self.winner_id = winner_id
 
     def __repr__(self):
         return f"Session(problem_id: {self.problem_id})"
