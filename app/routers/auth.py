@@ -38,7 +38,10 @@ class Register(Resource):
 
         db.session.add(user)
         db.session.commit()
-        return {"status": "success", "message": "User successfully registered"}
+        return {
+            "status": "success",
+            "message": "User successfully registered",
+        }, HTTPStatus.CREATED
 
 
 @authRouter.route("/login")
@@ -61,7 +64,7 @@ class Login(Resource):
             "username": user.username,
             "access_token": create_access_token(identity=user, expires_delta=False),
             "token_type": "bearer",
-        }
+        }, HTTPStatus.OK
 
 
 @authRouter.route("/logout")
