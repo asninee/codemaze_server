@@ -17,7 +17,7 @@ def enter_room(data):
     available_rooms = check_exisiting_rooms(rooms)
 
     name = data["username"]
-    print(name)
+    print("line 20: ", name)
 
     if not name:
         print("No Name")
@@ -32,28 +32,48 @@ def enter_room(data):
     session["room"] = room
     session["name"] = name
 
-    rooms[room]["users"].append(name)
     user_rooms[name] = room
 
     obj = {"room": room, "name": name, "success": True}
 
     ## replaced on the front-end
-    socketio.emit("receiveData", data=obj)
 
     print("available rooms: ", available_rooms)
     print("rooms: ", rooms)
     print("user_rooms: ", user_rooms)
 
+    socketio.emit("receiveData", data=obj)
+    socketio.emit("receiveRooms", data=rooms)
     socketio.emit("receivemoredata", data=user_rooms)
     handle_connect()
 
     return {"success": True, "room": room}
 
 
-@socketio.on("receiveRooms")
-def receive():
-    print("roooms :", rooms)
-    socketio.emit("receiveRooms", data=rooms)
+@socketio.on("sendRooms")
+def receive(data):
+    roomCode = data["r"]["room"]
+    user = data["r"]["name"]
+
+    print(rooms)
+    # print(roomCode)
+    # print(user)
+
+    socketio.emit("receiveRooms2", data=rooms)
+
+
+# @sockets.route("/gameroom")
+# def game_room():
+#     room = session.get("room")
+#     name = session.get("name")
+#     # if room is None or name is None or check_rooms(room):
+#     if room is None or name is None:
+#         ## replaced on the front-end
+#         return redirect(url_for("sockets.home"))
+
+#     ## replaced on the front-end
+#     return render_template("game_room.html", room=room)
+
 
 @socketio.on("connect")
 def handle_connect():
@@ -67,9 +87,14 @@ def handle_connect():
 
     join_room(room)
     send({"name": name, "message": "has entered the room"}, to=room)
+    rooms[room]["users"].append(name)
     rooms[room]["members"] += 1
     print(f"{name} joined room {room}")
 
+@socketio.on("leave_room")
+def exit_room(data):
+    room = data.get("room")
+    leave_room(room)
 
 @socketio.on("disconnect")
 def handle_disconnect():
