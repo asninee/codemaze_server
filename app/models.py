@@ -70,19 +70,39 @@ class Rank(db.Model):
 class Problem(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(50), unique=True)
-    content = db.Column(db.Text)
+    description = db.Column(db.Text)
     rank_id = db.Column(db.ForeignKey("rank.id"))
 
     rank = db.relationship("Rank", back_populates="problems")
     sessions = db.relationship("Session", back_populates="problem")
+    examples = db.relationship("Example", back_populates="problem")
 
-    def __init__(self, title, content, rank_id):
+    def __init__(self, title, description, rank_id):
         self.title = title
-        self.content = content
+        self.description = description
         self.rank_id = rank_id
 
     def __repr__(self):
         return f"Problem(title: {self.title}, rank_id: {self.rank_id})"
+
+
+class Example(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    problem_id = db.Column(db.ForeignKey("problem.id"))
+    input = db.Column(db.String(250))
+    output = db.Column(db.String(250))
+    explanation = db.Column(db.Text)
+
+    problem = db.relationship("Problem", back_populates="examples")
+
+    def __init__(self, problem_id, input, output, explanation):
+        self.problem_id = problem_id
+        self.input = input
+        self.output = output
+        self.explanation = explanation
+
+    def __repr__(self):
+        return f"Example(problem_id: {self.problem_id})"
 
 
 class Session(db.Model):
