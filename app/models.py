@@ -12,7 +12,8 @@ session_user = db.Table(
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(50), unique=True)
-    password_hash = db.Column(db.String(250))
+    password_hash = db.Column(db.Text)
+    avatar = db.Column(db.Text)
     xp = db.Column(db.Integer)
     wins = db.Column(db.Integer)
     losses = db.Column(db.Integer)
@@ -27,6 +28,7 @@ class User(db.Model):
     def __init__(self, username, password):
         self.username = username
         self.password_hash = generate_password_hash(password)
+        self.avatar = ""
         self.xp = 0
         self.wins = 0
         self.losses = 0
