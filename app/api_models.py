@@ -5,7 +5,11 @@ from sqlalchemy import Integer
 from .extensions import api
 
 login_model = api.model(
-    "LoginInput", {"username": fields.String, "password": fields.String}
+    "LoginInput",
+    {
+        "username": fields.String(required=True),
+        "password": fields.String(required=True),
+    },
 )
 
 rank_model = api.model(
@@ -32,10 +36,10 @@ problem_model = api.model(
 session_input_model = api.model(
     "SessionInput",
     {
-        "problem_id": fields.Integer,
-        "user_one_id": fields.Integer,
-        "user_two_id": fields.Integer,
-        "winner_id": fields.Integer,
+        "problem_id": fields.Integer(required=True),
+        "user_one_id": fields.Integer(required=True),
+        "user_two_id": fields.Integer(required=True),
+        "winner_id": fields.Integer(required=True),
     },
 )
 

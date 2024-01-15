@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, session, redirect, Blueprint, url_for
+from flask import Flask, request, session, Blueprint
 from flask_socketio import join_room, leave_room, send, emit
 
 from string import ascii_uppercase
@@ -8,12 +8,12 @@ from ..extensions import socketio
 
 sockets = Blueprint("sockets", __name__)
 
-rooms = {}  # storing room asssignments ## replaced with database at some point
-
+rooms = {}  # storing room asssignments
+user_rooms = {} 
 
 @socketio.on("join_room")
 def enter_room(data):
-    session.clear()
+
     available_rooms = check_exisiting_rooms(rooms)
 
     name = data["username"]
@@ -33,17 +33,27 @@ def enter_room(data):
     session["name"] = name
 
     rooms[room]["users"].append(name)
+    user_rooms[name] = room
 
     obj = {"room": room, "name": name, "success": True}
 
     ## replaced on the front-end
     socketio.emit("receiveData", data=obj)
 
-    print(available_rooms)
+    print("available rooms: ", available_rooms)
+    print("rooms: ", rooms)
+    print("user_rooms: ", user_rooms)
+
+    socketio.emit("receivemoredata", data=user_rooms)
     handle_connect()
-    print(rooms)
 
     return {"success": True, "room": room}
+
+
+@socketio.on("receiveRooms")
+def receive():
+    print("roooms :", rooms)
+    socketio.emit("receiveRooms", data=rooms)
 
 @socketio.on("connect")
 def handle_connect():
@@ -128,3 +138,14 @@ def msg(data):
             return
 
     print("Invalid room or user")
+
+@socketio.on("send_user_rooms")
+def get_user_rooms(data):
+    room = data.get("room")
+    name = data.get("username")
+    user_rooms = data.get("user_rooms") or {}
+
+    print("user_rooms: ", user_rooms)
+    user_rooms[name] = room
+    print("user_rooms: ", user_rooms)
+    socketio.emit("sendback_user_rooms", data=user_rooms)
