@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, session, redirect, Blueprint, url_for, jsonify
+from flask import Flask, request, session, Blueprint
 from flask_socketio import join_room, leave_room, send, emit
 
 from string import ascii_uppercase
@@ -9,11 +9,11 @@ from ..extensions import socketio
 sockets = Blueprint("sockets", __name__)
 
 rooms = {}  # storing room asssignments
-user_rooms = {}
+user_rooms = {} 
 
 @socketio.on("join_room")
 def enter_room(data):
-    # session.clear()
+
     available_rooms = check_exisiting_rooms(rooms)
 
     name = data["username"]
@@ -31,7 +31,6 @@ def enter_room(data):
 
     session["room"] = room
     session["name"] = name
-    # return redirect(url_for("sockets.game_room"))
 
     rooms[room]["users"].append(name)
     user_rooms[name] = room
@@ -56,21 +55,6 @@ def enter_room(data):
 def receive():
     print("roooms :", rooms)
     socketio.emit("receiveRooms", data=rooms)
-
-
-
-# @sockets.route("/gameroom")
-# def game_room():
-#     room = session.get("room")
-#     name = session.get("name")
-#     # if room is None or name is None or check_rooms(room):
-#     if room is None or name is None:
-#         ## replaced on the front-end
-#         return redirect(url_for("sockets.home"))
-
-#     ## replaced on the front-end
-#     return render_template("game_room.html", room=room)
-
 
 @socketio.on("connect")
 def handle_connect():
