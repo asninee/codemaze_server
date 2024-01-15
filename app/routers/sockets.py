@@ -87,6 +87,10 @@ def handle_connect():
     rooms[room]["members"] += 1
     print(f"{name} joined room {room}")
 
+@socketio.on("leave_room")
+def exit_room(data):
+    room = data.get("room")
+    leave_room(room)
 
 @socketio.on("disconnect")
 def handle_disconnect():
@@ -182,10 +186,6 @@ def get_user_rooms(data):
 #     room = data.get("room")
 #     join_room(room)
 
-# @socketio.on("leave_room")
-# def exit_room(data):
-#     room = data.get("room")
-#     leave_room(room)
 
 # @sockets.route("/home", methods=["GET", "POST"])
 # def home():
