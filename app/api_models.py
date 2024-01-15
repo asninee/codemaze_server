@@ -69,3 +69,15 @@ user_profile_model = api.model(
         "sessions": fields.List(fields.Nested(session_model)),
     },
 )
+
+user_leaderboard_model = api.model(
+    "UserLeaderboardEntry",
+    {
+        "id": fields.Integer,
+        "username": fields.String,
+        "xp": fields.Integer,
+        "wins": fields.Integer,
+        "losses": fields.Integer,
+        "rank": fields.List(fields.Nested(rank_model)),
+    },
+)
