@@ -121,7 +121,8 @@ def generate_room_code(length):
 
 
 def add_rooms(data):
-    rooms[data] = {"members": 0, "users": []}
+    rooms[data] = {"members": 0,
+                   "users": []}
 
 
 def get_rooms():
@@ -174,3 +175,14 @@ def get_user_rooms(data):
     user_rooms[name] = room
     print("user_rooms: ", user_rooms)
     socketio.emit("sendback_user_rooms", data=user_rooms)
+
+
+@socketio.on("button_press")
+def handle_button_press(data):
+    print(f"button pressed")
+    socketio.emit("button_pressed")
+
+@socketio.on("button_enable")
+def handle_button_enable(data):
+    print(f"button enabled:")
+    socketio.emit("button_enabled")
