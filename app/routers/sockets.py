@@ -33,7 +33,6 @@ def enter_room(data):
     session["name"] = name
     # return redirect(url_for("sockets.game_room"))
 
-    rooms[room]["users"].append(name)
     user_rooms[name] = room
 
     # obj = [room, name]
@@ -90,6 +89,7 @@ def handle_connect():
 
     join_room(room)
     send({"name": name, "message": "has entered the room"}, to=room)
+    rooms[room]["users"].append(name)
     rooms[room]["members"] += 1
     print(f"{name} joined room {room}")
 
@@ -125,7 +125,10 @@ def generate_room_code(length):
 
 
 def add_rooms(data):
-    rooms[data] = {"members": 0, "users": []}
+    rooms[data] = {
+        "members": 0,
+        "users": []
+    }
 
 
 def get_rooms():
@@ -133,7 +136,7 @@ def get_rooms():
 
 
 def check_room_size(room):
-    if rooms[room]["members"] >= 2:
+    if len(rooms[room]["users"]) >= 2:
         return True
     return False
 
@@ -148,6 +151,24 @@ def check_exisiting_rooms(rooms_R):
 
     return available_rooms
 
+@socketio.on("send_question")
+def send_q(data):
+    room = data.get("room")
+    name = data.get("name")
+    question = data.get("text")
+
+    print("qRoom: ", room)
+    print("qName: ", name)
+    print("qQuestion: ", question)
+    user_room = user_rooms[name]
+
+    if user_room in rooms:
+        print("hit1")
+        if name in rooms[user_room]["users"]:
+            socketio.emit("get_question", question, to=user_room)
+            return
+
+
 
 @socketio.on("send_message")
 def msg(data):
@@ -157,6 +178,7 @@ def msg(data):
     name = data.get("username")
     user_rooms = data.get("user_rooms")
     user_room = user_rooms[name]
+
 
     if user_room in rooms:
         # print(rooms[room]["users"])
@@ -172,10 +194,10 @@ def msg(data):
 
 @socketio.on("send_user_rooms")
 def get_user_rooms(data):
-    room = data.get("room")
-    name = data.get("username")
-    user_rooms = data.get("user_rooms") or {}
 
+    room = data["roomData"]["room"]
+    name = data["roomData"]["name"]
+    
     print("user_rooms: ", user_rooms)
     user_rooms[name] = room
     print("user_rooms: ", user_rooms)
