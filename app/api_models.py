@@ -22,13 +22,24 @@ rank_model = api.model(
     },
 )
 
+example_model = api.model(
+    "Example",
+    {
+        "id": fields.Integer,
+        "input": fields.String,
+        "output": fields.String,
+        "explanation": fields.String,
+    },
+)
+
 problem_model = api.model(
     "Problem",
     {
         "id": fields.Integer,
         "title": fields.String,
-        "content": fields.String,
+        "description": fields.String,
         "rank": fields.List(fields.Nested(rank_model)),
+        "examples": fields.List(fields.Nested(example_model)),
     },
 )
 
