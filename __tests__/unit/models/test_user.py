@@ -1,3 +1,7 @@
+from flask import app
+from app.models import User
+
+
 def test_new_user_with_fixture(new_user):
     """
     GIVEN a User model
@@ -36,3 +40,13 @@ def test_rank_up(new_user):
     new_user.rank_up()
     assert new_user.rank_id == 2
     assert new_user.rank_id != 1
+
+
+# def test_find_by_username(new_user):
+#     """
+#     GIVEN an existing User
+#     WHEN the find_by_username() function is called
+#     THEN check that the related User object has been returned
+#     """
+#     fetched_user = User.find_by_username(new_user.username)
+#     assert fetched_user == new_user
