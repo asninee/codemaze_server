@@ -33,7 +33,6 @@ def enter_room(data):
     session["name"] = name
     # return redirect(url_for("sockets.game_room"))
 
-    rooms[room]["users"].append(name)
     user_rooms[name] = room
 
     # obj = [room, name]
@@ -90,6 +89,7 @@ def handle_connect():
 
     join_room(room)
     send({"name": name, "message": "has entered the room"}, to=room)
+    rooms[room]["users"].append(name)
     rooms[room]["members"] += 1
     print(f"{name} joined room {room}")
 
