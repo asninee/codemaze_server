@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, session, redirect, Blueprint, url_for
+from flask import Flask, render_template, request, session, redirect, Blueprint, url_for, jsonify
 from flask_socketio import join_room, leave_room, send, emit
 
 from string import ascii_uppercase
@@ -13,7 +13,7 @@ user_rooms = {}
 
 @socketio.on("join_room")
 def enter_room(data):
-    session.clear()
+    # session.clear()
     available_rooms = check_exisiting_rooms(rooms)
 
     name = data["username"]
@@ -50,6 +50,13 @@ def enter_room(data):
     handle_connect()
 
     return {"success": True, "room": room}
+
+
+@socketio.on("receiveRooms")
+def receive():
+    print("roooms :", rooms)
+    socketio.emit("receiveRooms", data=rooms)
+
 
 
 # @sockets.route("/gameroom")
