@@ -45,16 +45,16 @@ def enter_room(data):
     print("rooms: ", rooms)
     print("user_rooms: ", user_rooms)
 
+    socketio.emit("receiveRooms", data=rooms)
     socketio.emit("receivemoredata", data=user_rooms)
     handle_connect()
 
     return {"success": True, "room": room}
 
 
-@socketio.on("receiveRooms")
-def receive():
-    print("roooms :", rooms)
-    socketio.emit("receiveRooms", data=rooms)
+# @socketio.on("receiveRooms")
+# def receive():
+#     print("roooms :", rooms)
 
 @socketio.on("connect")
 def handle_connect():
