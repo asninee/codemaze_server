@@ -1,6 +1,7 @@
 from flask_restx import Resource, Namespace
 from flask_jwt_extended import current_user, jwt_required
 
+from app.extensions import db
 from app.models import User
 from app.api_models import (
     user_profile_model,
@@ -48,4 +49,5 @@ class UpdateAvatar(Resource):
     def patch(self):
         """Update the currently logged-in user's avatar"""
         current_user.avatar = userRouter.payload["avatar"]
+        db.session.commit()
         return current_user, 200
