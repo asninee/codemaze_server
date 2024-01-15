@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, session, redirect, Blueprint, url_for
+from flask import Flask, render_template, request, session, redirect, Blueprint, url_for, jsonify
 from flask_socketio import join_room, leave_room, send, emit
 
 from string import ascii_uppercase
@@ -9,11 +9,11 @@ from ..extensions import socketio
 sockets = Blueprint("sockets", __name__)
 
 rooms = {}  # storing room asssignments
-
+user_rooms = {}
 
 @socketio.on("join_room")
 def enter_room(data):
-    session.clear()
+    # session.clear()
     available_rooms = check_exisiting_rooms(rooms)
 
     name = data["username"]
@@ -34,6 +34,7 @@ def enter_room(data):
     # return redirect(url_for("sockets.game_room"))
 
     rooms[room]["users"].append(name)
+    user_rooms[name] = room
 
     # obj = [room, name]
     obj = {"room": room, "name": name, "success": True}
@@ -41,11 +42,22 @@ def enter_room(data):
     ## replaced on the front-end
     socketio.emit("receiveData", data=obj)
 
-    print(available_rooms)
+    print("available rooms: ", available_rooms)
+    print("rooms: ", rooms)
+    print("user_rooms: ", user_rooms)
+
+    socketio.emit("receivemoredata", data=user_rooms)
     handle_connect()
-    print(rooms)
 
     return {"success": True, "room": room}
+
+
+@socketio.on("receiveRooms")
+def receive():
+    print("roooms :", rooms)
+    socketio.emit("receiveRooms", data=rooms)
+
+
 
 # @sockets.route("/gameroom")
 # def game_room():
@@ -146,50 +158,13 @@ def msg(data):
 
     print("Invalid room or user")
 
+@socketio.on("send_user_rooms")
+def get_user_rooms(data):
+    room = data.get("room")
+    name = data.get("username")
+    user_rooms = data.get("user_rooms") or {}
 
-# @socketio.on("message")
-# def handle_message(msg):
-#     print("Received message: " + msg)
-#     socketio.emit("Message", msg, broadcast=True)
-
-
-# @socketio.on("join_room")
-# def enter_room(data):
-#     room = data.get("room")
-#     join_room(room)
-
-# @socketio.on("leave_room")
-# def exit_room(data):
-#     room = data.get("room")
-#     leave_room(room)
-
-# @sockets.route("/home", methods=["GET", "POST"])
-# def home():
-#     session.clear()
-#     available_rooms = check_exisiting_rooms(rooms)
-
-#     if request.method == "POST":
-#         name = request.form.get("name")
-#         print(name)
-#         join = request.form.get("join", False)
-
-#         if not name:
-#             print(name)
-#             return render_template("home.html", error="Enter a name", name=name)
-
-#         if join != False:
-#             if not available_rooms:
-#                 room = generate_room_code(4)
-#                 add_rooms(room)
-#             else:
-#                 room = list(available_rooms.keys())[0]
-
-#         session["room"] = room
-#         session["name"] = name
-#         return redirect(url_for("sockets.game_room"))
-
-#     print(rooms)
-#     print(available_rooms)
-
-#     ## replaced on the front-end
-#     return render_template("home.html")
+    print("user_rooms: ", user_rooms)
+    user_rooms[name] = room
+    print("user_rooms: ", user_rooms)
+    socketio.emit("sendback_user_rooms", data=user_rooms)
