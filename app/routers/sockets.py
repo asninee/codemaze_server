@@ -17,7 +17,7 @@ def enter_room(data):
     available_rooms = check_exisiting_rooms(rooms)
 
     name = data["username"]
-    print(name)
+    print("line 20: ", name)
 
     if not name:
         print("No Name")
@@ -40,12 +40,12 @@ def enter_room(data):
     obj = {"room": room, "name": name, "success": True}
 
     ## replaced on the front-end
-    socketio.emit("receiveData", data=obj)
 
     print("available rooms: ", available_rooms)
     print("rooms: ", rooms)
     print("user_rooms: ", user_rooms)
 
+    socketio.emit("receiveData", data=obj)
     socketio.emit("receiveRooms", data=rooms)
     socketio.emit("receivemoredata", data=user_rooms)
     handle_connect()
@@ -53,10 +53,16 @@ def enter_room(data):
     return {"success": True, "room": room}
 
 
-# @socketio.on("receiveRooms")
-# def receive():
-#     print("roooms :", rooms)
+@socketio.on("sendRooms")
+def receive(data):
+    roomCode = data["r"]["room"]
+    user = data["r"]["name"]
 
+    print(rooms)
+    # print(roomCode)
+    # print(user)
+
+    socketio.emit("receiveRooms2", data=rooms)
 
 
 # @sockets.route("/gameroom")
