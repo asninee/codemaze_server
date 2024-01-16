@@ -20,6 +20,7 @@ flask-restx = "*"
 flask-jwt-extended = "*"
 colorama = "*"
 responses = "*"
+openai = "*"
 
 [dev-packages]
 pytest = "*"
