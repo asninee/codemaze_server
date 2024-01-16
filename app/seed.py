@@ -22,6 +22,10 @@ def initialize_db(app, db):
         user2 = User(username="b", password="jkl")
         user3 = User(username="c", password="jkl")
 
+        user1.assign_random_avatar()
+        user2.assign_random_avatar()
+        user3.assign_random_avatar()
+
         db.session.add_all([user1, user2, user3])
 
         problem1 = Problem(
