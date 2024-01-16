@@ -29,6 +29,7 @@ example_model = api.model(
         "input": fields.String,
         "output": fields.String,
         "explanation": fields.String,
+        "test_case": fields.String,
     },
 )
 
