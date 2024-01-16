@@ -57,6 +57,7 @@ def create_app():
         identity = jwt_data["sub"]
         return User.query.filter_by(id=identity).first()
 
-    initialize_db(app, db)
+    # Seed test data (no longer required)
+    # initialize_db(app, db)
 
     return app
