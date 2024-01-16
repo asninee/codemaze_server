@@ -59,7 +59,15 @@ class UpdateAvatar(Resource):
     @userRouter.marshal_with(user_avatar_model)
     def patch(self):
         """Update the currently logged-in user's avatar"""
-        current_user.avatar = userRouter.payload["avatar"]
+        avatar = userRouter.payload["avatar"]
+        if not avatar:
+            abort(
+                HTTPStatus.BAD_REQUEST,
+                "Invalid credentials provided: Make sure to include `avatar`",
+                status="fail",
+            )
+
+        current_user.avatar = avatar
         db.session.commit()
         return current_user, 200
 
