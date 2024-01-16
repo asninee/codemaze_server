@@ -120,11 +120,6 @@ def generate_room_code(length):
     return code
 
 
-def add_rooms(data):
-    rooms[data] = {"members": 0,
-                   "users": []}
-
-
 def get_rooms():
     return rooms
 
@@ -165,6 +160,18 @@ def msg(data):
 
     print("Invalid room or user")
 
+
+def add_rooms(data):
+    rooms[data] = {
+        "members": 0,
+        "users": [],
+        "question_data": {
+            "question": "",
+            "testcase": [],
+        }
+    }
+
+
 @socketio.on("send_user_rooms")
 def get_user_rooms(data):
     room = data.get("room")
@@ -200,3 +207,15 @@ def handle_hide_popup(data):
     room = session.get("room")
     print(f"Popup hidden in room: {room}")
     socketio.emit("hidden_popup", room=room)
+
+@socketio.on("setting_question")
+def handle_set_question(data):
+    room = session.get("room")
+    rooms[room]["question_data"]["question"] = data.get("question")
+    rooms[room]["question_data"]["testcase"] = data.get("testcase")
+
+@socketio.on("getting_question")
+def handle_get_question(data):
+    room = session.get("room")
+    question = rooms[room]["question_data"]
+    socketio.emit("got_question", question, room=room)
