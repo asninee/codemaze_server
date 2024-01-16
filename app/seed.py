@@ -4,6 +4,7 @@ from app.models import Example, Problem, Rank, Session, User
 
 
 def initialize_db(app, db):
+    """Seed exemplar data for testing purposes"""
     engine = sa.create_engine(app.config["SQLALCHEMY_DATABASE_URI"])
     with app.app_context():
         db.drop_all()
@@ -11,12 +12,14 @@ def initialize_db(app, db):
 
         print("✅ Initialised the database!")
 
-        rank1 = Rank(name="Bronze", min_xp=0, max_xp=250)
-        rank2 = Rank(name="Silver", min_xp=251, max_xp=500)
-        rank3 = Rank(name="Gold", min_xp=501, max_xp=750)
-        rank4 = Rank(name="Platinum", min_xp=751, max_xp=1000)
-
-        db.session.add_all([rank1, rank2, rank3, rank4])
+        db.session.add_all(
+            [
+                Rank(name="Bronze", min_xp=0, max_xp=250),
+                Rank(name="Silver", min_xp=251, max_xp=500),
+                Rank(name="Gold", min_xp=501, max_xp=750),
+                Rank(name="Platinum", min_xp=751, max_xp=1000),
+            ]
+        )
 
         user1 = User(username="a", password="jkl")
         user2 = User(username="b", password="jkl")
