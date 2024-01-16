@@ -24,6 +24,15 @@ class Register(Resource):
     def post(self):
         """Register a new user"""
         username = authRouter.payload["username"]
+        password = authRouter.payload["password"]
+
+        if not username and password:
+            abort(
+                HTTPStatus.CONFLICT,
+                "Invalid credentials provided: Make sure to include `username`, `password`",
+                status="fail",
+            )
+
         if User.find_by_username(username=username):
             abort(
                 HTTPStatus.CONFLICT,
@@ -32,8 +41,8 @@ class Register(Resource):
             )
 
         user = User(
-            username=authRouter.payload["username"],
-            password=authRouter.payload["password"],
+            username=username,
+            password=password,
         )
 
         user.assign_random_avatar()
@@ -55,7 +64,18 @@ class Login(Resource):
     @authRouter.response(int(HTTPStatus.INTERNAL_SERVER_ERROR), "Internal Server Error")
     def post(self):
         """Authenticate an existing user and return an access token"""
+        username = authRouter.payload["username"]
+        password = authRouter.payload["password"]
+
+        if not username and password:
+            abort(
+                HTTPStatus.CONFLICT,
+                "Invalid credentials provided: Make sure to include `username`, `password`",
+                status="fail",
+            )
+
         user = User.find_by_username(authRouter.payload["username"])
+
         if not user:
             abort(HTTPStatus.BAD_REQUEST, "User not found", status="fail")
         if not user.check_password(authRouter.payload["password"]):

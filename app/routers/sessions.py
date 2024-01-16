@@ -1,10 +1,9 @@
 from http import HTTPStatus
-from flask import abort
-from flask_restx import Namespace, Resource
+from flask_restx import Namespace, Resource, abort
 from flask_jwt_extended import jwt_required
 
 from app.extensions import db
-from app.models import Session, User
+from app.models import Problem, Session, User
 from app.api_models import (
     session_input_model,
     session_model,
@@ -33,14 +32,22 @@ class SessionsAPI(Resource):
     @sessionRouter.marshal_with(session_model)
     def post(self):
         """Create a new session with a related problem, participants, and a winner assigned to it"""
+        problem = Problem.query.get(sessionRouter.payload["problem_id"])
         user1 = User.query.get(sessionRouter.payload["user_one_id"])
         user2 = User.query.get(sessionRouter.payload["user_two_id"])
         winner = User.query.get(sessionRouter.payload["winner_id"])
 
-        if not user1 and user2 and winner:
+        if not problem and user1 and user2 and winner:
             abort(
                 HTTPStatus.BAD_REQUEST,
-                "Invalid credentials provided",
+                "Invalid credentials provided: Make sure to include `problem_id`, `user_one_id`, `user_two_id`, `winner_id`",
+                status="fail",
+            )
+
+        if winner != user1 and winner != user2:
+            abort(
+                HTTPStatus.BAD_REQUEST,
+                "Invalid credentials: The `winner_id` must come from the session participants",
                 status="fail",
             )
 
