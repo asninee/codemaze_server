@@ -96,4 +96,21 @@ user_leaderboard_model = api.model(
     },
 )
 
+user_avatar_model = api.model(
+    "UserAvatar",
+    {
+        "id": fields.String,
+        "username": fields.String,
+        "avatar": fields.String,
+    },
+)
+
 user_avatar_update_model = api.model("AvatarUpdate", {"avatar": fields.String})
+
+user_avatar_fetch_model = api.model(
+    "AvatarFetch",
+    {
+        "username_one": fields.String,
+        "username_two": fields.String,
+    },
+)
