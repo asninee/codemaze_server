@@ -108,14 +108,16 @@ class Example(db.Model):
     input = db.Column(db.String(250))
     output = db.Column(db.String(250))
     explanation = db.Column(db.Text)
+    test_case = db.Column(db.Text)
 
     problem = db.relationship("Problem", back_populates="examples")
 
-    def __init__(self, problem_id, input, output, explanation):
+    def __init__(self, problem_id, input, output, explanation, test_case):
         self.problem_id = problem_id
         self.input = input
         self.output = output
         self.explanation = explanation
+        self.test_case = test_case
 
     def __repr__(self):
         return f"Example(problem_id: {self.problem_id})"
