@@ -64,6 +64,7 @@ class GenerateProblem(Resource):
                         "input": "Fill in input values",
                         "output": "Fill in output values",
                         "explanation": "Provide explanation as to how the inputs were used to reach the desired output",
+                        "test_case": "Provide a test case in the form of a function call using the input e.g. function_name(input)",
                     }
                 ],
             }
@@ -85,7 +86,7 @@ class GenerateProblem(Resource):
 
                     {problems}
                     
-                    You should create a valid JSON object containing the the title of the coding challenge, a description and examples with expected inputs and outputs:
+                    You should create a valid JSON object containing the the title of the coding challenge, a description and examples with expected inputs, outputs and a test case where you define a function call, using the inputs:
 
                     {output_format}
 
@@ -114,6 +115,7 @@ class GenerateProblem(Resource):
                 input=e["input"],
                 output=e["output"],
                 explanation=e["explanation"],
+                test_case=e["test_case"],
             )
             for e in resp_problem["examples"]
         ]
