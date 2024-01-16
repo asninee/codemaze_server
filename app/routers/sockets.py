@@ -52,27 +52,11 @@ def enter_room(data):
 
 @socketio.on("sendRooms")
 def receive(data):
-    # roomCode = data["r"]["room"]
-    # user = data["r"]["name"]
-
     print(rooms)
-    # print(roomCode)
-    # print(user)
 
     socketio.emit("receiveRooms2", data=rooms)
 
 
-# @sockets.route("/gameroom")
-# def game_room():
-#     room = session.get("room")
-#     name = session.get("name")
-#     # if room is None or name is None or check_rooms(room):
-#     if room is None or name is None:
-#         ## replaced on the front-end
-#         return redirect(url_for("sockets.home"))
-
-#     ## replaced on the front-end
-#     return render_template("game_room.html", room=room)
 
 
 @socketio.on("connect")
@@ -121,8 +105,14 @@ def generate_room_code(length):
 
 
 def add_rooms(data):
-    rooms[data] = {"members": 0,
-                   "users": []}
+    rooms[data] = {
+        "members": 0,
+        "users": [],
+        "question_data": {
+            "question": ' ',
+            "testcases": [],
+        }
+    }
 
 
 def get_rooms():
@@ -146,22 +136,38 @@ def check_exisiting_rooms(rooms_R):
     return available_rooms
 
 
-@socketio.on("send_message")
-def msg(data):
-    sender_sid = request.sid
 
-    room = data.get("room")
-    name = data.get("username")
-    user_rooms = data.get("user_rooms")
-    user_room = user_rooms[name]
+@socketio.on("setting_question")
+def handle_set_question(data):
+    room = session.get("room")
+    rooms[room]["question_data"]["question"] = data.get("initialQ")
+    rooms[room]["question_data"]["testcases"] = data.get("testCase")
+    print(rooms)
 
-    if user_room in rooms:
-        if name in rooms[user_room]["users"]:
-            message = data.get("message")
-            socketio.emit(
-                "get_message", {"name": name, "message": message}, to=user_room
-            )
-            return
+
+@socketio.on("getting_question")
+def handle_get_question():
+    room = session.get("room")
+    question = rooms[room]["question_data"]
+    socketio.emit("got_question", question, room=room)
+
+
+# @socketio.on("send_message")
+# def msg(data):
+#     sender_sid = request.sid
+
+#     room = data.get("room")
+#     name = data.get("username")
+#     user_rooms = data.get("user_rooms")
+#     user_room = user_rooms[name]
+
+#     if user_room in rooms:
+#         if name in rooms[user_room]["users"]:
+#             message = data.get("message")
+#             socketio.emit(
+#                 "get_message", {"name": name, "message": message}, to=user_room
+#             )
+#             return
 
     print("Invalid room or user")
 
