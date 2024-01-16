@@ -1,3 +1,4 @@
+import random
 from .extensions import db
 from sqlalchemy.sql import func
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -45,6 +46,19 @@ class User(db.Model):
 
     def __repr__(self):
         return f"User(username: {self.username}, xp: {self.xp})"
+
+    def assign_random_avatar(self):
+        avatars = [
+            "https://api.dicebear.com/7.x/bottts-neutral/svg?seed=Pepper&radius=45&backgroundType=solid,gradientLinear",
+            "https://api.dicebear.com/7.x/bottts-neutral/svg?seed=Midnight&radius=45&backgroundType=solid,gradientLinear",
+            "https://api.dicebear.com/7.x/bottts-neutral/svg?seed=Mittens&radius=45&backgroundType=solid,gradientLinear",
+            "https://api.dicebear.com/7.x/bottts-neutral/svg?seed=Max&radius=45&backgroundType=solid,gradientLinear",
+            "https://api.dicebear.com/7.x/bottts-neutral/svg?seed=Oscar&radius=45&backgroundType=solid,gradientLinear",
+            "https://api.dicebear.com/7.x/bottts-neutral/svg?seed=Sassy&radius=45&backgroundType=solid,gradientLinear",
+        ]
+
+        avatar = random.choice(avatars)
+        self.avatar = avatar
 
     @classmethod
     def find_by_username(cls, username):
