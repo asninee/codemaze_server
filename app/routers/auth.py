@@ -36,6 +36,8 @@ class Register(Resource):
             password=authRouter.payload["password"],
         )
 
+        user.assign_random_avatar()
+
         db.session.add(user)
         db.session.commit()
         return {
