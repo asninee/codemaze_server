@@ -32,6 +32,7 @@ def new_example():
         input="cillum",
         output="adipisicing occaecat",
         explanation="Commodo exercitation in nulla aliqua reprehenderit magna reprehenderit adipisicing. Do pariatur consequat eu ad ut eu tempor elit. Eiusmod esse Lorem aliquip pariatur ea. Fugiat consectetur do est et magna labore sunt tempor quis.",
+        test_case="occaecat do irure dolor",
     )
     return example
 
