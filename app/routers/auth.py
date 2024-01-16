@@ -28,7 +28,7 @@ class Register(Resource):
 
         if not username and password:
             abort(
-                HTTPStatus.CONFLICT,
+                HTTPStatus.BAD_REQUEST,
                 "Invalid credentials provided: Make sure to include `username`, `password`",
                 status="fail",
             )
@@ -69,7 +69,7 @@ class Login(Resource):
 
         if not username and password:
             abort(
-                HTTPStatus.CONFLICT,
+                HTTPStatus.BAD_REQUEST,
                 "Invalid credentials provided: Make sure to include `username`, `password`",
                 status="fail",
             )

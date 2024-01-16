@@ -73,4 +73,4 @@ class SessionsAPI(Resource):
             winner.rank_up()
 
         db.session.commit()
-        return session, 201
+        return session, HTTPStatus.CREATED
