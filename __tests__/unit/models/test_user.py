@@ -43,6 +43,16 @@ def test_rank_up(new_user):
     assert new_user.rank_id != 1
 
 
+def test_assign_random_avatar(new_user):
+    """
+    GIVEN an existing User
+    WHEN the assign_random_avatar() function is called
+    THEN check the avatar has been updated
+    """
+    new_user.assign_random_avatar()
+    assert new_user.avatar != ""
+
+
 # def test_find_by_username(new_user):
 #     """
 #     GIVEN an existing User
