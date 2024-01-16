@@ -35,7 +35,7 @@ class RandomProblem(Resource):
             .order_by(func.random())
             .first()
         )
-        return problem, 200
+        return problem, HTTPStatus.OK
 
 
 @problemRouter.route("/generate")
@@ -125,4 +125,4 @@ class GenerateProblem(Resource):
         db.session.add_all(examples)
         db.session.commit()
 
-        return problem, 200
+        return problem, HTTPStatus.CREATED
