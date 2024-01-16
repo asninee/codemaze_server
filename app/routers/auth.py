@@ -55,7 +55,7 @@ class Login(Resource):
     @authRouter.response(int(HTTPStatus.INTERNAL_SERVER_ERROR), "Internal Server Error")
     def post(self):
         """Authenticate an existing user and return an access token"""
-        user = User.query.filter_by(username=authRouter.payload["username"]).first()
+        user = User.find_by_username(authRouter.payload["username"])
         if not user:
             abort(HTTPStatus.BAD_REQUEST, "User not found", status="fail")
         if not user.check_password(authRouter.payload["password"]):
