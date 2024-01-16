@@ -52,8 +52,8 @@ def enter_room(data):
 
 @socketio.on("sendRooms")
 def receive(data):
-    roomCode = data["r"]["room"]
-    user = data["r"]["name"]
+    # roomCode = data["r"]["room"]
+    # user = data["r"]["name"]
 
     print(rooms)
     # print(roomCode)
@@ -179,10 +179,24 @@ def get_user_rooms(data):
 
 @socketio.on("button_press")
 def handle_button_press(data):
-    print(f"button pressed")
-    socketio.emit("button_pressed")
+    room = session.get("room")
+    print(f"button pressed in room: {room}")
+    socketio.emit("button_pressed", room=room)
 
 @socketio.on("button_enable")
 def handle_button_enable(data):
-    print(f"button enabled:")
-    socketio.emit("button_enabled")
+    room = session.get("room")
+    print(f"button enabled in room: {room}")
+    socketio.emit("button_enabled", room=room)
+
+@socketio.on("display_popup")
+def handle_display_popup(data):
+    room = session.get("room")
+    print(f"Popup displayed in room: {room}")
+    socketio.emit("displayed_popup", room=room)
+
+@socketio.on("hide_popup")
+def handle_hide_popup(data):
+    room = session.get("room")
+    print(f"Popup hidden in room: {room}")
+    socketio.emit("hidden_popup", room=room)
