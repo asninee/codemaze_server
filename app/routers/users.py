@@ -31,7 +31,7 @@ class Profile(Resource):
     @userRouter.marshal_with(user_profile_model)
     def get(self):
         """Get the profile information of the currently logged-in user"""
-        return User.query.get(current_user.id), 200
+        return User.query.get(current_user.id), HTTPStatus.OK
 
 
 @userRouter.route("/leaderboard")
@@ -44,7 +44,7 @@ class Leaderboard(Resource):
     @userRouter.marshal_list_with(user_leaderboard_model)
     def get(self):
         """Get all users, ordered by their xp"""
-        return User.query.order_by(User.xp.desc()).all(), 200
+        return User.query.order_by(User.xp.desc()).all(), HTTPStatus.OK
 
 
 @userRouter.route("/update")
@@ -69,7 +69,7 @@ class UpdateAvatar(Resource):
 
         current_user.avatar = avatar
         db.session.commit()
-        return current_user, 200
+        return current_user, HTTPStatus.OK
 
 
 @userRouter.route("/avatars")
@@ -91,4 +91,4 @@ class GetAvatars(Resource):
 
         if not users:
             abort(HTTPStatus.BAD_REQUEST, "Users not found", status="fail")
-        return users, 200
+        return users, HTTPStatus.OK
