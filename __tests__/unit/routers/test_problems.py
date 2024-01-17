@@ -1,24 +1,34 @@
-# import os
-# import responses
+from flask import json
+import requests, responses
+from http import HTTPStatus
 
 
-# @responses.activate
-# def test_get(client):
-#     responses.add(
-#         responses.GET,
-#         f'http://localhost:{os.environ["FLASK_RUN_PORT"]}/problems',
-#         json={
-#             "id": 4,
-#             "title": "reprehenderit",
-#             "content": "Elit deserunt tempor cillum eu. Laborum aute tempor sunt incididunt anim reprehenderit elit ut nisi cillum sint aliquip dolor. Adipisicing est incididunt aute. Occaecat excepteur eiusmod sit ullamco voluptate dolore reprehenderit qui id quis. Ipsum eiusmod sint do voluptate et incididunt voluptate aute qui occaecat ullamco consectetur cupidatat. Pariatur commodo sunt id. Cillum elit proident esse. Sint adipisicing ut pariatur excepteur anim non veniam nostrud elit.",
-#             "rank": [{"id": 4, "name": "Platinum", "min_xp": 750, "max_xp": 1000}],
-#         },
-#         status=200,
-#     )
-#     # register_response = client.post(
-#     #     "/users/register", data={"username": "d", "password": "jkl"}
-#     # )
-#     # print(register_response)
-#     # assert register_response == 201
-#     response = client.get("/problems")
-#     assert response.status_code == 200
+def test_valid_random_problem(test_client, log_in_user):
+    access_token = log_in_user
+    response = test_client.get(
+        "/problems/random", headers={"Authorization": f"Bearer {access_token}"}
+    )
+    assert response.status_code == HTTPStatus.OK
+
+
+def test_valid_generate_problem(test_client, log_in_user):
+    access_token = log_in_user
+    mock_problem = json.dumps(
+        {
+            "title": "labore",
+            "description": "Commodo nostrud Lorem et deserunt commodo Lorem est officia reprehenderit sunt eiusmod Lorem ex amet. Mollit deserunt est amet aute cillum proident non ipsum deserunt nisi labore tempor irure non sunt. Sunt duis qui minim proident exercitation labore minim mollit aliquip fugiat anim. Est proident esse anim sint ut proident aute ullamco voluptate veniam dolore nulla. Do incididunt aliquip eu Lorem proident. Qui ad ullamco anim anim fugiat aliquip. Ut minim proident dolore.",
+            "rank_id": 2,
+        }
+    )
+    responses.add(
+        responses.POST,
+        "http://localhost:3000/problems/generate",
+        headers={"Authorization": f"Bearer {access_token}"},
+        json=mock_problem,
+        status=HTTPStatus.CREATED,
+    )
+
+    response = test_client.post(
+        "/problems/generate", headers={"Authorization": f"Bearer {access_token}"}
+    )
+    assert response.status_code == HTTPStatus.CREATED

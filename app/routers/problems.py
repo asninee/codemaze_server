@@ -23,7 +23,10 @@ class RandomProblem(Resource):
     method_decorators = [jwt_required()]
 
     @problemRouter.doc(security="jsonWebToken")
-    @problemRouter.response(int(HTTPStatus.OK), "Problem successfully returned")
+    @problemRouter.response(int(HTTPStatus.UNAUTHORIZED), "Token is invalid or expired")
+    @problemRouter.response(
+        int(HTTPStatus.INTERNAL_SERVER_ERROR), "Internal Server Error"
+    )
     @problemRouter.marshal_with(problem_model)
     def get(self):
         """Get a random problem with the same rank as the currently logged-in user"""
@@ -32,11 +35,7 @@ class RandomProblem(Resource):
             .order_by(func.random())
             .first()
         )
-        if not problem:
-            return {
-                "error": "The server unfortunately ran into an error when attempting to fetch the problem"
-            }, 500
-        return problem, 200
+        return problem, HTTPStatus.OK
 
 
 @problemRouter.route("/generate")
@@ -44,7 +43,10 @@ class GenerateProblem(Resource):
     method_decorators = [jwt_required()]
 
     @problemRouter.doc(security="jsonWebToken")
-    @problemRouter.response(int(HTTPStatus.OK), "Problem successfully generated")
+    @problemRouter.response(int(HTTPStatus.UNAUTHORIZED), "Token is invalid or expired")
+    @problemRouter.response(
+        int(HTTPStatus.INTERNAL_SERVER_ERROR), "Internal Server Error"
+    )
     @problemRouter.marshal_with(problem_model)
     def post(self):
         """Generate a problem with the same rank as the currently logged-in user using AI"""
@@ -123,4 +125,4 @@ class GenerateProblem(Resource):
         db.session.add_all(examples)
         db.session.commit()
 
-        return problem, 200
+        return problem, HTTPStatus.CREATED

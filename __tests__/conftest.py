@@ -1,6 +1,29 @@
 import pytest
+from app import create_app
+from app.extensions import db
 
 from app.models import Example, Session, TokenBlocklist, User, Rank, Problem
+
+
+@pytest.fixture(scope="module")
+def test_client():
+    app = create_app()
+
+    with app.test_client() as testing_client:
+        with app.app_context():
+            yield testing_client
+
+            User.query.filter(User.username == "testuser").delete()
+            db.session.commit()
+
+
+@pytest.fixture(scope="function")
+def log_in_user(test_client):
+    response = test_client.post("auth/login", json={"username": "a", "password": "jkl"})
+
+    yield response.json["access_token"]
+
+    test_client.get("auth/logout")
 
 
 @pytest.fixture(scope="module")
