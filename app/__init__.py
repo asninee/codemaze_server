@@ -22,9 +22,8 @@ def create_app():
     app.config["SECRET_KEY"] = "secret"
 
     allowed_origins = [
-        "https://codemaze-api.onrender.com/",
+        "https://codemaze.onrender.com/",
         "http://localhost:5173",
-        "http://localhost:5175",
         "http://localhost:5174",
         "http://localhost:5175",
     ]
