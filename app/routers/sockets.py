@@ -38,9 +38,9 @@ def enter_room(data):
 
     ## replaced on the front-end
 
-    print("available rooms: ", available_rooms)
-    print("rooms: ", rooms)
-    print("user_rooms: ", user_rooms)
+    # print("available rooms: ", available_rooms)
+    # print("rooms: ", rooms)
+    # print("user_rooms: ", user_rooms)
 
     socketio.emit("receiveData", data=obj)
     socketio.emit("receiveRooms", data=rooms)
@@ -53,10 +53,7 @@ def enter_room(data):
 @socketio.on("sendRooms")
 def receive(data):
     print(rooms)
-
     socketio.emit("receiveRooms2", data=rooms)
-
-
 
 
 @socketio.on("connect")
@@ -109,8 +106,9 @@ def add_rooms(data):
         "members": 0,
         "users": [],
         "question_data": {
-            "question": ' ',
+            "question": '',
             "testcases": [],
+            "expected": '',
         }
     }
 
@@ -142,6 +140,7 @@ def handle_set_question(data):
     room = session.get("room")
     rooms[room]["question_data"]["question"] = data.get("initialQ")
     rooms[room]["question_data"]["testcases"] = data.get("testCase")
+    rooms[room]["question_data"]["expected"] = data.get("expectedOutcome")
     print(rooms)
 
 
@@ -169,7 +168,7 @@ def handle_get_question():
 #             )
 #             return
 
-    print("Invalid room or user")
+    # print("Invalid room or user")
 
 @socketio.on("send_user_rooms")
 def get_user_rooms(data):
@@ -177,32 +176,39 @@ def get_user_rooms(data):
     name = data.get("username")
     user_rooms = data.get("user_rooms") or {}
 
-    print("user_rooms: ", user_rooms)
+    # print("user_rooms: ", user_rooms)
     user_rooms[name] = room
-    print("user_rooms: ", user_rooms)
+    # print("user_rooms: ", user_rooms)
     socketio.emit("sendback_user_rooms", data=user_rooms)
 
 
 @socketio.on("button_press")
 def handle_button_press(data):
     room = session.get("room")
-    print(f"button pressed in room: {room}")
+    # print(f"button pressed in room: {room}")
     socketio.emit("button_pressed", room=room)
 
 @socketio.on("button_enable")
 def handle_button_enable(data):
     room = session.get("room")
-    print(f"button enabled in room: {room}")
+    # print(f"button enabled in room: {room}")
     socketio.emit("button_enabled", room=room)
 
 @socketio.on("display_popup")
 def handle_display_popup(data):
     room = session.get("room")
-    print(f"Popup displayed in room: {room}")
+    # print(f"Popup displayed in room: {room}")
     socketio.emit("displayed_popup", room=room)
 
 @socketio.on("hide_popup")
 def handle_hide_popup(data):
     room = session.get("room")
-    print(f"Popup hidden in room: {room}")
+    # print(f"Popup hidden in room: {room}")
     socketio.emit("hidden_popup", room=room)
+
+@socketio.on("check_answer")
+def handle_answer_state(data):
+    room = session.get("room")
+    trueORfalse = data
+    print(f"current answer state: {trueORfalse}")
+    socketio.emit("checked_answer", trueORfalse, room=room)
