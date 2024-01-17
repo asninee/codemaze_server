@@ -22,13 +22,25 @@ rank_model = api.model(
     },
 )
 
+example_model = api.model(
+    "Example",
+    {
+        "id": fields.Integer,
+        "input": fields.String,
+        "output": fields.String,
+        "explanation": fields.String,
+        "test_case": fields.String,
+    },
+)
+
 problem_model = api.model(
     "Problem",
     {
         "id": fields.Integer,
         "title": fields.String,
-        "content": fields.String,
+        "description": fields.String,
         "rank": fields.List(fields.Nested(rank_model)),
+        "examples": fields.List(fields.Nested(example_model)),
     },
 )
 
@@ -63,6 +75,7 @@ user_profile_model = api.model(
         "id": fields.Integer,
         "username": fields.String,
         "xp": fields.Integer,
+        "avatar": fields.String,
         "wins": fields.Integer,
         "losses": fields.Integer,
         "rank": fields.List(fields.Nested(rank_model)),
@@ -75,9 +88,29 @@ user_leaderboard_model = api.model(
     {
         "id": fields.Integer,
         "username": fields.String,
+        "avatar": fields.String,
         "xp": fields.Integer,
         "wins": fields.Integer,
         "losses": fields.Integer,
         "rank": fields.List(fields.Nested(rank_model)),
+    },
+)
+
+user_avatar_model = api.model(
+    "UserAvatar",
+    {
+        "id": fields.String,
+        "username": fields.String,
+        "avatar": fields.String,
+    },
+)
+
+user_avatar_update_model = api.model("AvatarUpdate", {"avatar": fields.String})
+
+user_avatar_fetch_model = api.model(
+    "AvatarFetch",
+    {
+        "username_one": fields.String,
+        "username_two": fields.String,
     },
 )
