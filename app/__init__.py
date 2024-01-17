@@ -34,8 +34,8 @@ def create_app():
     jwt.init_app(app)
     socketio.init_app(app, cors_allowed_origins=allowed_origins)
 
-    app.register_blueprint(sockets)
     api.add_namespace(authRouter)
+    app.register_blueprint(sockets)
     api.add_namespace(userRouter)
     api.add_namespace(problemRouter)
     api.add_namespace(sessionRouter)
