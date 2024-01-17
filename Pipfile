@@ -1,0 +1,36 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[[source]]
+url = "nary"
+verify_ssl = true
+name = ""
+
+[packages]
+flask = "*"
+python-dotenv = "*"
+flask-cors = "*"
+flask-sqlalchemy = "*"
+gunicorn = "*"
+psycopg2-binary = "*"
+flask-socketio = "*"
+flask-restx = "*"
+flask-jwt-extended = "*"
+colorama = "*"
+responses = "*"
+openai = "*"
+
+[dev-packages]
+pytest = "*"
+pytest-watch = "*"
+pytest-cov = "*"
+
+[requires]
+python_version = "3.12"
+
+[scripts]
+dev = "flask run"
+test = "ptw -- -v -rP"
+coverage = "pytest --cov-report term-missing --cov=app"
