@@ -36,8 +36,6 @@ def enter_room(data):
 
     obj = {"room": room, "name": name, "success": True}
 
-    ## replaced on the front-end
-
     # print("available rooms: ", available_rooms)
     # print("rooms: ", rooms)
     # print("user_rooms: ", user_rooms)
@@ -168,7 +166,7 @@ def handle_get_question():
 #             )
 #             return
 
-#  print("Invalid room or user")
+# print("Invalid room or user")
 
 
 def add_rooms(data):
