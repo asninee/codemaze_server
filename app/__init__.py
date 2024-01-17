@@ -23,6 +23,10 @@ def create_app():
 
     allowed_origins = [
         "https://codemaze-api.onrender.com/",
+        "http://localhost:5173",
+        "http://localhost:5175",
+        "http://localhost:5174",
+        "http://localhost:5175",
     ]
 
     cors.init_app(app, origins=allowed_origins)
