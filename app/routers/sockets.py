@@ -17,7 +17,8 @@ def enter_room(data):
     available_rooms = check_exisiting_rooms(rooms)
 
     name = data["username"]
-    print("line 20: ", name)
+    userId = data["userId"]
+    # print("line 20: ", name)
 
     if not name:
         print("No Name")
@@ -31,6 +32,7 @@ def enter_room(data):
 
     session["room"] = room
     session["name"] = name
+    session["user_id"] = userId
 
     user_rooms[name] = room
 
@@ -50,7 +52,7 @@ def enter_room(data):
 
 @socketio.on("sendRooms")
 def receive(data):
-    print(rooms)
+    # print(rooms)
     socketio.emit("receiveRooms2", data=rooms)
 
 
@@ -58,6 +60,7 @@ def receive(data):
 def handle_connect():
     room = session.get("room")
     name = session.get("name")
+    id = session.get("user_id")
     if not room or not name:
         return
     if room not in rooms:
@@ -67,6 +70,7 @@ def handle_connect():
     join_room(room)
     send({"name": name, "message": "has entered the room"}, to=room)
     rooms[room]["users"].append(name)
+    rooms[room]["user_ids"].append(id)
     rooms[room]["members"] += 1
     print(f"{name} joined room {room}")
 
@@ -79,10 +83,12 @@ def exit_room(data):
 def handle_disconnect():
     room = session.get("room")
     name = session.get("name")
+    id = session.get("user_id")
 
     if room in rooms:
         rooms[room]["members"] -= 1
         rooms[room]["users"].remove(name)
+        rooms[room]["user_ids"].remove(id)
         if rooms[room]["members"] <= 0:
             del rooms[room]
     send({"name": name, "message": "has left the room"}, to=room)
@@ -97,19 +103,6 @@ def generate_room_code(length):
         if code not in rooms:
             break
     return code
-
-
-def add_rooms(data):
-    rooms[data] = {
-        "members": 0,
-        "users": [],
-        "question_data": {
-            "question": '',
-            "testcases": [],
-            "expected": '',
-        }
-    }
-
 
 def get_rooms():
     return rooms
@@ -139,7 +132,7 @@ def handle_set_question(data):
     rooms[room]["question_data"]["question"] = data.get("initialQ")
     rooms[room]["question_data"]["testcases"] = data.get("testCase")
     rooms[room]["question_data"]["expected"] = data.get("expectedOutcome")
-    print(rooms)
+    # print(rooms)
 
 
 @socketio.on("getting_question")
@@ -173,6 +166,8 @@ def add_rooms(data):
     rooms[data] = {
         "members": 0,
         "users": [],
+        "user_ids": [],
+        "winner_id": 0,
         "question_data": {
             "question": "",
             "testcase": [],
@@ -222,3 +217,22 @@ def handle_answer_state(data):
     trueORfalse = data
     print(f"current answer state: {trueORfalse}")
     socketio.emit("checked_answer", trueORfalse, room=room)
+
+
+@socketio.on("set_opponent")
+def handle_setting_userId(data):
+    user_id = data
+    room = session.get("room")
+    room_user_ids = rooms[room]["user_ids"]
+    for id in room_user_ids:
+        if id != user_id:
+            opponent_id = id
+
+    socketio.emit("opponent_set", opponent_id, room=room)
+
+
+@socketio.on("set_winner")
+def handle_winner(data):
+    room = session.get("room")
+    winner_id = data
+    socketio.emit("winner_set", winner_id, room=room)
