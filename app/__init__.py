@@ -23,17 +23,16 @@ def create_app():
 
     allowed_origins = [
         "http://localhost:5173",
+        "http://localhost:5175",
         "http://localhost:5174",
         "http://localhost:5175",
     ]
 
-    cors.init_app(app, origins=allowed_origins)  # change to render links eventually
+    cors.init_app(app, origins=allowed_origins)
     api.init_app(app)
     db.init_app(app)
     jwt.init_app(app)
-    socketio.init_app(
-        app, cors_allowed_origins=allowed_origins
-    )  # change to render links eventually
+    socketio.init_app(app, cors_allowed_origins=allowed_origins)
 
     app.register_blueprint(sockets)
     api.add_namespace(authRouter)
