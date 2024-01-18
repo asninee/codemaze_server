@@ -51,10 +51,10 @@ This is the back end of our application containing the necessary files required 
 - Worked with and learned Flask, Flask_socketio, Flask_restx.
 - Learned how to correctly use socket functions to communicate between front-end, back-end and users.
 ### Challenges
-- Has to re-write function logic to handle change from templates to front-end <-> back-end communication.
+- Had to rewrite function logic to handle change from templates to front-end <-> back-end communication.
 - Connecting two users and saving user info inside the same room.
 - Creating routes to handle the different needs of the application.
-
+- 
 ## Bugs
 - Refresh during 1v1 game causes connection issues, unable to reconnect to same room.
 - Data sent at the end of the game is only correct for the winner, not loser.
