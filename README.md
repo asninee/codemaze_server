@@ -14,8 +14,8 @@ This is the back end of our application containing the necessary files required 
 - After repo is cloned open with:
     `cd reddy41_server`
 - Install required dependencies with:
-    `flask install`
-    `flask install --dev`
+    - `pip install pipenv`
+    - `pipenv install` and `pipenv install --dev`
 - Open project in code editor:
     `code .`
 - Create a **.env** file inside your project:
