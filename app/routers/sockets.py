@@ -180,7 +180,7 @@ def get_user_rooms(data):
     room = data.get("room")
     name = data.get("username")
     user_rooms = data.get("user_rooms") or {}
-
+    #test
     # print("user_rooms: ", user_rooms)
     user_rooms[name] = room
     # print("user_rooms: ", user_rooms)
