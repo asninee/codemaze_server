@@ -9,11 +9,11 @@ from ..extensions import socketio
 sockets = Blueprint("sockets", __name__)
 
 rooms = {}  # storing room asssignments
-user_rooms = {} 
+user_rooms = {}
+
 
 @socketio.on("join_room")
 def enter_room(data):
-
     available_rooms = check_exisiting_rooms(rooms)
 
     name = data["username"]
@@ -74,10 +74,12 @@ def handle_connect():
     rooms[room]["members"] += 1
     print(f"{name} joined room {room}")
 
+
 @socketio.on("leave_room")
 def exit_room(data):
     room = data.get("room")
     leave_room(room)
+
 
 @socketio.on("disconnect")
 def handle_disconnect():
@@ -104,6 +106,7 @@ def generate_room_code(length):
             break
     return code
 
+
 def get_rooms():
     return rooms
 
@@ -123,7 +126,6 @@ def check_exisiting_rooms(rooms_R):
             ]  ## adding the room to available if it does not have 2 players
 
     return available_rooms
-
 
 
 @socketio.on("setting_question")
@@ -171,7 +173,7 @@ def add_rooms(data):
         "question_data": {
             "question": "",
             "testcase": [],
-        }
+        },
     }
 
 
@@ -180,7 +182,7 @@ def get_user_rooms(data):
     room = data.get("room")
     name = data.get("username")
     user_rooms = data.get("user_rooms") or {}
-    #test
+    # test
     # print("user_rooms: ", user_rooms)
     user_rooms[name] = room
     # print("user_rooms: ", user_rooms)
@@ -193,11 +195,13 @@ def handle_button_press(data):
     # print(f"button pressed in room: {room}")
     socketio.emit("button_pressed", room=room)
 
+
 @socketio.on("button_enable")
 def handle_button_enable(data):
     room = session.get("room")
     # print(f"button enabled in room: {room}")
     socketio.emit("button_enabled", room=room)
+
 
 @socketio.on("display_popup")
 def handle_display_popup(data):
@@ -205,11 +209,13 @@ def handle_display_popup(data):
     # print(f"Popup displayed in room: {room}")
     socketio.emit("displayed_popup", room=room)
 
+
 @socketio.on("hide_popup")
 def handle_hide_popup(data):
     room = session.get("room")
     # print(f"Popup hidden in room: {room}")
     socketio.emit("hidden_popup", room=room)
+
 
 @socketio.on("check_answer")
 def handle_answer_state(data):
