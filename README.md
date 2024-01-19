@@ -19,7 +19,7 @@ This is the back end of our application containing the necessary files required 
 - Open project in code editor:
     `code .`
 - Create a **.env** file inside your project:
-- ![image](https://github.com/nine96as/reddy41_server/assets/146546964/aaeb27cb-f0eb-44f5-b0c9-e0db9772c095)
+- ![image](https://github.com/nine96as/reddy41_server/assets/146546964/cd6be723-23b4-4104-9f8c-4090b391ee49)
 - To start run:
     `flask run` or `python run.py`
 
