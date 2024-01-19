@@ -2,6 +2,9 @@
 
 The Codemaze API is a back-end server built using Python, Flask and Flask-RESTX that allows for auth operations on users (register, login, logout), and a multitude of user, problem and session operations. It also utilises Flask-SocketIO to generate and manage game session rooms.
 
+> [!note]
+> Live demo [_here_](https://codemaze-api.onrender.com/)
+
 ## Table of Contents
 
 - [Technologies Used](#technologies-used)
